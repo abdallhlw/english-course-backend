@@ -11,6 +11,23 @@ const fs = require('fs');
 
 // ===== إعداد السيرفر الأساسي =====
 const app = express();
+const express = require('express');
+const mongoose = require('mongoose');
+const cors = require('cors'); // تأكد من وجود هذا السطر
+
+const app = express();
+
+// 🔥 الحل السحري لمشكلة الـ CORS (يجب أن يكون هنا في الأعلى قبل أي شيء آخر) 🔥
+app.use(cors({
+    origin: '*', // هذا السطر يسمح لموقع Netlify وأي موقع آخر بالاتصال
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
+// السماح للسيرفر بقراءة بيانات JSON المرسلة
+app.use(express.json());
+
+// -- هنا تبدأ باقي مسارات موقعك (Routes) --
 const server = http.createServer(app); 
 const io = socketIo(server, { 
   cors: { origin: '*', methods: ['GET', 'POST', 'PATCH', 'DELETE'] } 
