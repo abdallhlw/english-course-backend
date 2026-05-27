@@ -9,7 +9,7 @@ const path = require('path');
 const fs = require('fs');
 
 // ===== إعداد السيرفر الأساسي =====
-const app = express(); // 👈 هذا هو السطر الذي كان مفقوداً وتسبب في الانهيار!
+const app = express();
 const server = http.createServer(app); 
 const io = socketIo(server, { 
   cors: { origin: '*', methods: ['GET', 'POST', 'PATCH', 'DELETE'] } 
@@ -33,7 +33,13 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/photo', express.static(path.join(__dirname, 'photo')));
 
-// ===== باقي الكود الخاص بك يبدأ من هنا (Multer و Mongoose وغيرها) =====
+// ===== إنشاء مجلد الملفات وإعداد Multer (هنا كان الخطأ وتم إصلاحه!) =====
+if (!fs.existsSync('./uploads')){ fs.mkdirSync('./uploads'); }
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) { cb(null, './uploads/'); },
+    filename: function (req, file, cb) { cb(null, Date.now() + '-' + file.originalname.replace(/\s+/g, '-')); }
+});
+const upload = multer({ storage: storage });
 
 // ===== MONGODB CONNECTION =====
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/english_course';
