@@ -9,27 +9,22 @@ const path = require('path');
 const fs = require('fs');
 
 // ===== إعداد السيرفر الأساسي =====
-// ===== 👁️ رادار المراقبة (لكي نرى أي طلب يصل للسيرفر في الشاشة السوداء) =====
-app.use((req, res, next) => {
-    console.log(`📩 وصل طلب جديد: ${req.method} ${req.url}`);
-    next();
-});
-
-// 🔥 المفتاح الشامل لـ CORS (يسمح بمرور أي موقع وأي بيانات بدون حظر) 🔥
-app.use(cors({
-    origin: function (origin, callback) { callback(null, true); },
-    credentials: true
-}));
+const app = express(); // 👈 هذا هو السطر الذي كان مفقوداً وتسبب في الانهيار!
 const server = http.createServer(app); 
 const io = socketIo(server, { 
   cors: { origin: '*', methods: ['GET', 'POST', 'PATCH', 'DELETE'] } 
 });
 
-// 🔥 إعدادات CORS للسماح لموقع Netlify بالاتصال (مكتوبة مرة واحدة فقط) 🔥
+// ===== 👁️ رادار المراقبة (لكي نرى أي طلب يصل) =====
+app.use((req, res, next) => {
+    console.log(`📩 وصل طلب جديد: ${req.method} ${req.url}`);
+    next();
+});
+
+// 🔥 المفتاح الشامل لـ CORS 🔥
 app.use(cors({
-    origin: '*', 
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization']
+    origin: function (origin, callback) { callback(null, true); },
+    credentials: true
 }));
 
 // السماح للسيرفر بقراءة البيانات
@@ -38,13 +33,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/photo', express.static(path.join(__dirname, 'photo')));
 
-// ===== إنشاء مجلد الملفات وإعداد Multer =====
-if (!fs.existsSync('./uploads')){ fs.mkdirSync('./uploads'); }
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) { cb(null, './uploads/'); },
-    filename: function (req, file, cb) { cb(null, Date.now() + '-' + file.originalname.replace(/\s+/g, '-')); }
-});
-const upload = multer({ storage: storage });
+// ===== باقي الكود الخاص بك يبدأ من هنا (Multer و Mongoose وغيرها) =====
 
 // ===== MONGODB CONNECTION =====
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/english_course';
