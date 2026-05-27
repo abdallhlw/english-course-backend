@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>غرف المحادثة - English Course</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@700;900&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="user.css">
+    <style>
+        /* تنسيق أزرار الإجراءات في هيدر الدردشة */
+.chat-actions { display: flex; gap: 8px; margin-right: auto; }
+
+.btn-action-chat { background: #f0f2f5; color: #333; border: 1px solid #ddd; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-size: 12px; font-weight: bold; transition: 0.3s; display: flex; align-items: center; gap: 5px; }
+.btn-action-chat:hover { background: #e4e6eb; transform: scale(1.02); }
+
+.btn-danger-chat { background: #ff4d4d; color: white; border: none; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-size: 12px; font-weight: bold; transition: 0.3s; display: flex; align-items: center; gap: 5px; }
+.btn-danger-chat:hover { background: #cc0000; transform: scale(1.05); }
+        body { display: flex; flex-direction: column; min-height: 100vh; background: #f0f2f5; overflow: hidden; }
+        .btn-delete-chat { background: #ff4d4d; color: white; border: none; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-size: 12px; font-weight: bold; margin-right: auto; transition: 0.3s; }
+.btn-delete-chat:hover { background: #cc0000; transform: scale(1.05); }
+        .main-header { padding: 10px 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .main-header .img { width: 45px; }
+
+        .chat-layout { display: flex; flex: 1; height: calc(100vh - 70px); max-width: 1400px; margin: 0 auto; width: 100%; background: #fff; box-shadow: var(--shadow-md); }
+
+        /* القائمة الجانبية */
+        .chat-sidebar { width: 320px; border-left: 1px solid #ddd; display: flex; flex-direction: column; background: #fff; z-index: 10; }
+        .sidebar-header { padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; background: var(--white-dim); }
+        .sidebar-header h3 { font-family: 'Tajawal', sans-serif; color: var(--black-soft); }
+        .btn-new-group { background: var(--purple); color: white; border: none; padding: 8px 12px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; display: flex; align-items: center; gap: 5px;}
+        .btn-new-group:hover { background: var(--purple-deep); }
+        
+        .search-chat { padding: 10px; border-bottom: 1px solid #eee; }
+        .search-chat input { width: 100%; padding: 10px 15px; border-radius: 20px; border: 1px solid #ddd; outline: none; background: #f0f2f5; font-family: 'Cairo', sans-serif; }
+        
+        .contacts-list { flex: 1; overflow-y: auto; }
+        .contact-item { display: flex; align-items: center; gap: 15px; padding: 15px; border-bottom: 1px solid #f5f5f5; cursor: pointer; transition: 0.2s; }
+        .contact-item:hover, .contact-item.active { background: var(--blue-pale); }
+        
+        /* ألوان الأفاتار حسب النوع */
+        .contact-avatar { width: 45px; height: 45px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 20px; font-weight: bold; color: white; }
+        .avatar-admin { background: linear-gradient(135deg, var(--gold), #ff9900); }
+        .avatar-group { background: linear-gradient(135deg, var(--blue), #00d2ff); }
+        .avatar-user { background: linear-gradient(135deg, var(--purple), var(--pink)); }
+
+        .contact-info { flex: 1; overflow: hidden; }
+        .contact-info h4 { margin: 0; font-size: 15px; color: var(--black-soft); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .contact-info p { margin: 3px 0 0; font-size: 13px; color: #888; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+        /* منطقة الرسائل */
+        .chat-main { flex: 1; display: flex; flex-direction: column; background: #efeae2; position: relative; }
+        .chat-main::before { content: ''; position: absolute; top:0; left:0; right:0; bottom:0; background: url('https://www.transparenttextures.com/patterns/cubes.png') opacity 0.05; z-index: 0; pointer-events: none; }
+
+        .chat-header { padding: 15px 20px; background: #fff; border-bottom: 1px solid #ddd; display: flex; align-items: center; gap: 15px; z-index: 1; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+        .chat-header h3 { margin: 0; color: var(--black-soft); font-family: 'Tajawal', sans-serif; }
+        
+        .messages-area { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; z-index: 1; scroll-behavior: smooth; }
+        
+        /* فقاعات الرسائل والتفاعلات */
+        .message { max-width: 65%; padding: 10px 15px; border-radius: 15px; position: relative; width: fit-content; word-wrap: break-word; font-size: 14px; line-height: 1.5; display: flex; flex-direction: column; }
+        .message.received { background: #fff; align-self: flex-start; border-top-right-radius: 0; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+        .message.sent { background: #d9fdd3; align-self: flex-end; border-top-left-radius: 0; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+        .message .time { font-size: 10px; color: #888; align-self: flex-end; margin-top: 5px; }
+        .message .sender-name { font-size: 11px; font-weight: bold; color: var(--purple); margin-bottom: 3px; display: none; }
+        .message.group-msg.received .sender-name { display: block; }
+
+        .reaction-bar { position: absolute; top: -35px; background: #fff; padding: 5px 10px; border-radius: 20px; box-shadow: var(--shadow-md); display: none; gap: 10px; z-index: 10; border: 1px solid #eee; }
+        .message:hover .reaction-bar { display: flex; }
+        .message.sent .reaction-bar { left: 0; }
+        .message.received .reaction-bar { right: 0; }
+        .react-btn { cursor: pointer; transition: 0.2s; font-size: 18px; }
+        .react-btn:hover { transform: scale(1.3); }
+        .active-reactions { position: absolute; bottom: -10px; background: #fff; padding: 2px 6px; border-radius: 10px; font-size: 12px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); border: 1px solid #ddd; }
+        .message.sent .active-reactions { left: 10px; }
+        .message.received .active-reactions { right: 10px; }
+
+        /* منطقة الإدخال */
+        .chat-input-area { padding: 15px 20px; background: #f0f2f5; display: flex; align-items: center; gap: 10px; z-index: 1; }
+        .chat-input-area input { flex: 1; padding: 15px; border-radius: 25px; border: none; outline: none; font-family: 'Cairo', sans-serif; box-shadow: inset 0 1px 3px rgba(0,0,0,0.05); }
+        .btn-send { background: var(--purple); color: white; width: 45px; height: 45px; border-radius: 50%; border: none; cursor: pointer; display: flex; justify-content: center; align-items: center; font-size: 18px; transition: 0.3s; }
+        .btn-send:hover { background: var(--blue); transform: scale(1.05); }
+
+        /* نافذة إنشاء مجموعة */
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 9999; }
+        .modal-overlay.active { display: flex; }
+        .modal-box { background: #fff; padding: 25px; border-radius: 15px; width: 450px; max-width: 90%; box-shadow: var(--shadow-lg); }
+        .modal-box h3 { margin-top: 0; font-family: 'Tajawal'; color: var(--purple); margin-bottom: 15px; }
+        .modal-box input[type="text"] { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 8px; font-family: 'Cairo'; outline: none; }
+        
+        /* قائمة اختيار الطلاب في النافذة */
+        .students-selection-list { max-height: 200px; overflow-y: auto; border: 1px solid #eee; border-radius: 8px; padding: 10px; margin-bottom: 20px; background: #fafafa; }
+        .student-checkbox-item { display: flex; align-items: center; gap: 10px; padding: 8px; border-bottom: 1px solid #f5f5f5; cursor: pointer; transition: 0.2s; border-radius: 6px; }
+        .student-checkbox-item:hover { background: #ebebeb; }
+        .student-checkbox-item input { width: 18px; height: 18px; cursor: pointer; }
+        .student-checkbox-item span { font-size: 14px; font-weight: 600; color: #333; }
+
+        .welcome-screen { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; background: #f0f2f5; color: #888; z-index: 1; }
+        .welcome-screen i { font-size: 80px; color: #ddd; margin-bottom: 20px; }
+
+        @media (max-width: 768px) {
+            .chat-layout { flex-direction: column; }
+            .chat-sidebar { width: 100%; height: 40%; border-left: none; border-bottom: 2px solid #ddd; }
+            .chat-main { height: 60%; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="main-header" style="display: flex; justify-content: space-between; align-items: center; background: white;">
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <img src="photo/aaa.jpg" alt="Logo" class="img">
+            <h2 style="font-family: 'Tajawal'; color: var(--purple); margin: 0;">منصة المحادثات</h2>
+        </div>
+        <a href="index.html" style="text-decoration: none; font-weight: bold; color: var(--blue); border: 1px solid var(--blue); padding: 5px 15px; border-radius: 8px; transition: 0.3s;">العودة للرئيسية <i class="fa-solid fa-arrow-left"></i></a>
+    </header>
+
+    <div class="chat-layout">
+        
+        <aside class="chat-sidebar">
+            <div class="sidebar-header">
+                <h3>المحادثات</h3>
+                <button class="btn-new-group" onclick="document.getElementById('group-modal').classList.add('active')">
+                    <i class="fa-solid fa-users"></i> مجموعة
+                </button>
+            </div>
+            <div class="search-chat">
+                <input type="text" id="search-input" placeholder="ابحث عن زميل...">
+            </div>
+            <div class="contacts-list" id="contacts-list">
+                <div style="text-align: center; padding: 20px; color: #888;"><i class="fa-solid fa-spinner fa-spin"></i> جاري جلب الزملاء...</div>
+            </div>
+        </aside>
+
+        <!-- 2. منطقة الرسائل -->
+        <main class="chat-main">
+            <!-- شاشة الترحيب تظهر أولاً -->
+            <div class="welcome-screen" id="welcome-screen">
+                <i class="fa-brands fa-rocketchat"></i>
+                <h2>مرحباً بك يا بطل</h2>
+                <p>اختر الإدارة، أو مجموعة، أو زميلاً من القائمة لبدء المحادثة.</p>
+            </div>
+
+            <!-- محتوى المحادثة الفعلي -->
+            <div style="display: none; flex-direction: column; height: 100%;" id="active-chat-area">
+                
+                <!-- هذا هو الهيدر الذي كان به الخطأ المطبعي -->
+                <div class="chat-header">
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <div class="contact-avatar avatar-user" id="current-chat-avatar"><i class="fa-solid fa-user"></i></div>
+                        <div>
+                            <h3 id="current-chat-name">...</h3>
+                            <p style="margin: 0; font-size: 12px; color: #25d366;">متصل ومستعد للدردشة</p>
+                        </div>
+                    </div>
+                    <div class="chat-actions" id="chat-actions-container"></div>
+                </div>
+
+                <div class="messages-area" id="messages-area"></div>
+
+                <form class="chat-input-area" id="chat-form">
+                    <button type="button" style="background:none; border:none; font-size:24px; color:#888; cursor:pointer;"><i class="fa-regular fa-face-smile"></i></button>
+                    <button type="button" style="background:none; border:none; font-size:20px; color:#888; cursor:pointer;"><i class="fa-solid fa-paperclip"></i></button>
+                    <input type="text" id="message-input" placeholder="اكتب رسالتك هنا..." required autocomplete="off">
+                    <button type="submit" class="btn-send"><i class="fa-solid fa-paper-plane"></i></button>
+                </form>
+            </div>
+        </main>
+    </div>
+
+    <div class="modal-overlay" id="group-modal">
+        <div class="modal-box">
+            <h3><i class="fa-solid fa-users"></i> إنشاء مجموعة دراسية</h3>
+            <form id="create-group-form">
+                <input type="text" id="group-name" placeholder="اسم المجموعة (مثال: نقاش المستوى الأول)" required>
+                
+                <h4 style="margin: 0 0 10px 0; font-size: 14px; color: #555;">اختر زملاءك لإضافتهم للمجموعة:</h4>
+                
+                <div class="students-selection-list" id="modal-students-list">
+                    <div style="text-align: center; color: #888; font-size: 12px;">جاري تحميل قائمة الطلاب...</div>
+                </div>
+
+                <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                    <button type="button" class="btn-new-group" style="background: #ccc; color: #333;" onclick="document.getElementById('group-modal').classList.remove('active')">إلغاء</button>
+                    <button type="submit" class="btn-new-group" style="background: var(--blue);">إنشاء المجموعة</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+ <script src="http://localhost:5000/socket.io/socket.io.js"></script>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:5000';
+        let currentUser = null;
+        let currentChatId = null;
+        let currentChatType = null;
+        let allStudents = [];
+        let socket; // متغير الاتصال الفوري
+
+        document.addEventListener('DOMContentLoaded', async function() {
+            const token = localStorage.getItem('token');
+            const userStr = localStorage.getItem('user');
+            
+            if (!token || !userStr) {
+                window.location.href = 'login.html';
+                return;
+            }
+            currentUser = JSON.parse(userStr);
+
+            // 🔥 بدء الاتصال المباشر بالسيرفر 🔥
+            socket = io(API_BASE_URL);
+
+            // 1. استقبال رسائل المحادثة القديمة عند فتحها
+            socket.on('loadHistory', (messages) => {
+                const msgsArea = document.getElementById('messages-area');
+                msgsArea.innerHTML = ''; // مسح علامة التحميل
+                
+                messages.forEach(msg => {
+                    const type = msg.senderId === currentUser.id ? 'sent' : 'received';
+                    appendMessageUI(msg, type);
+                });
+            });
+
+            // 2. استقبال أي رسالة جديدة في نفس اللحظة
+            socket.on('receiveMessage', (msg) => {
+                const isMyMessage = msg.senderId === currentUser.id;
+                
+                // التأكد من أن الرسالة تخص المحادثة المفتوحة حالياً أمام الطالب
+                let shouldShow = false;
+                if(currentChatType === 'group' && msg.isGroup && msg.receiverId === currentChatId) shouldShow = true;
+                else if(currentChatType === 'admin' && (msg.receiverId === 'admin' || msg.senderId === 'admin')) shouldShow = true;
+                else if(msg.senderId === currentChatId || (isMyMessage && msg.receiverId === currentChatId)) shouldShow = true;
+
+                if (shouldShow) {
+                    appendMessageUI(msg, isMyMessage ? 'sent' : 'received');
+                }
+            });
+
+            // جلب زملاء الطالب من قاعدة البيانات
+            try {
+                const res = await fetch(`${API_BASE_URL}/api/users/peers`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (res.ok) { allStudents = await res.json(); }
+            } catch (error) { console.log("خطأ في جلب الزملاء"); }
+
+            renderSidebar();
+            renderModalStudents();
+        });
+
+        // دالة رسم القائمة الجانبية (الإدارة + الطلاب)
+        function renderSidebar() {
+            const contactsList = document.getElementById('contacts-list');
+            let html = `
+                <div class="contact-item" onclick="openChat('admin', 'إدارة المنصة (الدعم)', 'admin')">
+                    <div class="contact-avatar avatar-admin"><i class="fa-solid fa-crown"></i></div>
+                    <div class="contact-info">
+                        <h4>إدارة المنصة (الدعم الفني)</h4>
+                        <p>تواصل مع الإدارة</p>
+                    </div>
+                </div>
+            `;
+            
+            html += allStudents.filter(s => (s._id || s.id) !== currentUser.id).map(s => {
+                const sId = s._id || s.id;
+                // التحقق مما إذا كان الطالب يمتلك صورة
+                const avatarContent = s.avatar_url 
+                    ? `<img src="${API_BASE_URL}${s.avatar_url}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">` 
+                    : `<i class="fa-solid fa-user"></i>`;
+                
+                return `
+                <div class="contact-item" onclick="openChat('${sId}', '${s.name}', 'user', '${s.avatar_url || ''}')">
+                    <div class="contact-avatar avatar-user" style="padding:0; overflow:hidden;">${avatarContent}</div>
+                    <div class="contact-info">
+                        <h4>${s.name}</h4>
+                        <p>اضغط لبدء المحادثة</p>
+                    </div>
+                </div>
+            `}).join('');
+            
+            contactsList.innerHTML = html;
+        }
+
+        // دالة تعبئة نافذة إنشاء المجموعة
+        function renderModalStudents() {
+            const modalList = document.getElementById('modal-students-list');
+            const peers = allStudents.filter(s => (s._id || s.id) !== currentUser.id);
+            if(peers.length === 0) {
+                modalList.innerHTML = '<div style="text-align: center; color: #888;">لا يوجد زملاء متاحين حالياً.</div>';
+                return;
+            }
+            modalList.innerHTML = peers.map(s => {
+                const sId = s._id || s.id;
+                return `
+                <label class="student-checkbox-item">
+                    <input type="checkbox" name="group_members" value="${sId}">
+                    <span>${s.name}</span>
+                </label>
+            `}).join('');
+        }
+
+        // إنشاء مجموعة دراسية
+        document.getElementById('create-group-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const groupName = document.getElementById('group-name').value;
+            const groupId = 'group_' + Date.now(); // توليد ID فريد للمجموعة
+            
+            document.getElementById('group-modal').classList.remove('active');
+            document.getElementById('create-group-form').reset();
+            
+            const contactsList = document.getElementById('contacts-list');
+            contactsList.innerHTML += `
+                <div class="contact-item" onclick="openChat('${groupId}', '${groupName}', 'group')">
+                    <div class="contact-avatar avatar-group"><i class="fa-solid fa-users"></i></div>
+                    <div class="contact-info">
+                        <h4>${groupName}</h4>
+                        <p>مجموعة دراسية</p>
+                    </div>
+                </div>
+            `;
+            alert(`تم إنشاء المجموعة "${groupName}" بنجاح! يمكنك الآن بدء المحادثة فيها.`);
+        });
+
+        // فتح محادثة والانضمام إليها
+      function openChat(chatId, chatName, chatType, avatarUrl = '') {
+            currentChatId = chatId;
+            currentChatType = chatType;
+            document.getElementById('welcome-screen').style.display = 'none';
+            document.getElementById('active-chat-area').style.display = 'flex';
+            document.getElementById('current-chat-name').textContent = chatName;
+            
+            const avatarBox = document.getElementById('current-chat-avatar');
+            avatarBox.className = 'contact-avatar';
+            avatarBox.style.padding = '0';
+            avatarBox.style.overflow = 'hidden';
+            
+            if(chatType === 'admin') { 
+                avatarBox.classList.add('avatar-admin'); 
+                avatarBox.innerHTML = '<i class="fa-solid fa-crown"></i>'; 
+            }
+            else if(chatType === 'group') { 
+                avatarBox.classList.add('avatar-group'); 
+                avatarBox.innerHTML = '<i class="fa-solid fa-users"></i>'; 
+            }
+            else { 
+                avatarBox.classList.add('avatar-user'); 
+                // وضع الصورة إذا كانت متوفرة
+                avatarBox.innerHTML = avatarUrl 
+                    ? `<img src="${API_BASE_URL}${avatarUrl}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">` 
+                    : '<i class="fa-solid fa-user"></i>'; 
+            }
+
+            // رسم أزرار الحظر والإزالة
+            const actionsContainer = document.getElementById('chat-actions-container');
+            let actionsHtml = '';
+            if (chatType === 'user') {
+                actionsHtml += `<button class="btn-action-chat" onclick="blockStudent('${chatId}', '${chatName}')"><i class="fa-solid fa-ban" style="color:#d63031"></i> حظر</button>`;
+            } else if (chatType === 'group') {
+                actionsHtml += `<button class="btn-action-chat" onclick="removeStudentFromGroup('${chatId}')"><i class="fa-solid fa-user-minus"></i> إزالة طالب</button>`;
+            }
+            actionsHtml += `<button class="btn-danger-chat" onclick="deleteCurrentChat()"><i class="fa-solid fa-trash"></i> حذف</button>`;
+            actionsContainer.innerHTML = actionsHtml;
+
+            document.getElementById('messages-area').innerHTML = '<div style="text-align:center; padding:20px; color:#888;"><i class="fa-solid fa-spinner fa-spin"></i> جاري تحميل الرسائل...</div>';
+            
+            // جلب الرسائل من السيرفر
+            if(socket) socket.emit('joinChat', { userId: currentUser.id, chatId: currentChatId });
+        }
+        // إرسال رسالة
+        document.getElementById('chat-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const input = document.getElementById('message-input');
+            const text = input.value.trim();
+            if (!text || !currentChatId) return;
+
+            const msgData = {
+                senderId: currentUser.id,
+                senderName: currentUser.name,
+                receiverId: currentChatId,
+                text: text,
+                isGroup: currentChatType === 'group'
+            };
+
+            // 🔥 إرسال الرسالة للسيرفر 🔥
+            socket.emit('sendMessage', msgData);
+            input.value = '';
+        });
+
+        // عرض الرسالة في الشاشة
+        function appendMessageUI(msg, type) {
+            const msgsArea = document.getElementById('messages-area');
+            
+            // مسح كلمة جاري التحميل إذا كانت موجودة
+            if(msgsArea.innerHTML.includes('جاري تحميل الرسائل')) msgsArea.innerHTML = '';
+
+            const msgDiv = document.createElement('div');
+            msgDiv.className = `message ${type} ${msg.isGroup ? 'group-msg' : ''}`;
+            
+            const timeString = msg.createdAt ? new Date(msg.createdAt).toLocaleTimeString('ar-SA', {hour: '2-digit', minute:'2-digit'}) : new Date().toLocaleTimeString('ar-SA', {hour: '2-digit', minute:'2-digit'});
+
+            msgDiv.innerHTML = `
+                <div class="reaction-bar">
+                    <span class="react-btn" onclick="addReaction(this, '❤️')">❤️</span>
+                    <span class="react-btn" onclick="addReaction(this, '👍')">👍</span>
+                    <span class="react-btn" onclick="addReaction(this, '😂')">😂</span>
+                </div>
+                <span class="sender-name">${msg.senderName || ''}</span>
+                <span>${msg.text}</span>
+                <span class="time">${timeString}</span>
+                <div class="active-reactions" style="display:none;"></div>
+            `;
+            msgsArea.appendChild(msgDiv);
+            msgsArea.scrollTop = msgsArea.scrollHeight;
+        }
+
+        function addReaction(element, emoji) {
+            const reactionBox = element.parentElement.parentElement.querySelector('.active-reactions');
+            reactionBox.style.display = 'block';
+            reactionBox.textContent = emoji;
+        }
+
+        // دالة الحذف (تفريغ من الشاشة مؤقتاً)
+        function deleteCurrentChat() {
+            if(!currentChatId) return;
+            if(confirm('هل أنت متأكد من رغبتك في مسح الشاشة؟')) {
+                document.getElementById('messages-area').innerHTML = '<div style="text-align:center; color:#888; margin-top:20px; font-weight:bold;">تم تفريغ المحادثة.</div>';
+            }
+            // دالة حظر طالب
+        function blockStudent(studentId, studentName) {
+            if(confirm(`هل أنت متأكد من رغبتك في حظر الزميل "${studentName}"؟ لن يتمكن من إرسال رسائل لك بعد الآن.`)) {
+                // سيتم ربطها بالسيرفر لاحقاً لمنعه فعلياً من الإرسال
+                alert(`تم حظر ${studentName} بنجاح.`);
+                document.getElementById('messages-area').innerHTML += `<div style="text-align:center; color:#d63031; margin-top:10px; font-size:12px; font-weight:bold;"><i class="fa-solid fa-ban"></i> لقد قمت بحظر هذا المستخدم ولن تصلك رسائله.</div>`;
+                document.getElementById('message-input').disabled = true; // تعطيل الكتابة
+                document.querySelector('.btn-send').disabled = true;
+            }
+        }
+
+        // دالة إزالة طالب من المجموعة
+        function removeStudentFromGroup(groupId) {
+            // يمكن استبدالها لاحقاً بنافذة تظهر قائمة بأسماء الطلاب في المجموعة
+            const studentName = prompt("أدخل اسم أو رقم الطالب الذي تريد إزالته من هذه المجموعة:");
+            if(studentName && studentName.trim() !== '') {
+                // سيتم ربطها بالسيرفر لاحقاً
+                alert(`تم إزالة الطالب "${studentName}" من المجموعة بنجاح.`);
+                document.getElementById('messages-area').innerHTML += `<div style="text-align:center; color:#888; margin-top:10px; font-size:12px;"><i class="fa-solid fa-info-circle"></i> تم إزالة ${studentName} من المجموعة.</div>`;
+            }
+        }
+
+        // دالة الحذف (لتفريغ الشاشة)
+        function deleteCurrentChat() {
+            if(!currentChatId) return;
+            if(confirm('هل أنت متأكد من رغبتك في مسح شاشة المحادثة؟')) {
+                document.getElementById('messages-area').innerHTML = '<div style="text-align:center; color:#888; margin-top:20px; font-weight:bold;">تم تفريغ المحادثة.</div>';
+            }
+        }
+        }
+    </script>
+</body>
+</html>

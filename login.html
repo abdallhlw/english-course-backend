@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <meta name="theme-color" content="#0A0A0F">
+  <title>English Course — تسجيل الدخول</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+
+  <style>
+  /* ═══════════════════════════════════════════
+     TOKENS
+  ═══════════════════════════════════════════ */
+  :root{
+    --gold:#FFD700; --gold-d:#E6B800;
+    --black:#0A0A0F; --black-s:#111118;
+    --white:#FAFAFA; --white-d:#F2F2F8;
+    --purple:#8B2FC9; --purple-l:#B86EE8; --purple-p:#F3E8FF; --purple-d:#5B0FA0;
+    --pink:#FF6B9D; --pink-l:#FFB3CF;
+    --blue:#2563EB; --blue-l:#60A5FA;
+    --ease:cubic-bezier(.4,0,.2,1);
+    --t:all .3s var(--ease);
+    --r-sm:10px; --r-md:16px; --r-lg:22px; --r-xl:28px;
+  }
+  *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+
+  body{
+    font-family:'Cairo','Tajawal',sans-serif;
+    background:var(--black);
+    color:var(--white);
+    min-height:100vh;
+    direction:rtl;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* scrollbar */
+  ::-webkit-scrollbar{width:4px;}
+  ::-webkit-scrollbar-track{background:var(--black-s);}
+  ::-webkit-scrollbar-thumb{background:var(--purple-l);border-radius:99px;}
+
+  /* ═══════════════════════════════════════════
+     PAGE WRAPPER  —  2-col on desktop, 1-col on mobile
+  ═══════════════════════════════════════════ */
+  .auth-page{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    min-height:100vh;
+    position:relative;
+  }
+
+  /* noise texture */
+  .auth-page::after{
+    content:'';
+    position:fixed;inset:0;pointer-events:none;z-index:200;
+    background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    opacity:.022;
+  }
+
+  /* ═══════════════════════════════════════════
+     LEFT — SHOWCASE
+  ═══════════════════════════════════════════ */
+  .showcase-side{
+    position:relative;
+    overflow:hidden;
+    background:var(--black);
+  }
+  .showcase-video{
+    position:absolute;inset:0;width:100%;height:100%;
+    object-fit:cover;opacity:.16;filter:saturate(1.5);
+  }
+  .showcase-overlay{
+    position:absolute;inset:0;z-index:1;
+    background:linear-gradient(135deg,rgba(10,10,15,.88) 0%,rgba(91,15,160,.38) 55%,rgba(10,10,15,.78) 100%);
+  }
+
+  /* floating orbs */
+  .orb{position:absolute;border-radius:50%;pointer-events:none;z-index:0;animation:orbF ease-in-out infinite;}
+  .orb-1{width:220px;height:220px;background:radial-gradient(circle,rgba(139,47,201,.18),transparent);top:-50px;right:-50px;animation-duration:9s;}
+  .orb-2{width:160px;height:160px;background:radial-gradient(circle,rgba(255,107,157,.12),transparent);bottom:80px;left:20px;animation-duration:11s;animation-delay:-4s;}
+  .orb-3{width:120px;height:120px;background:radial-gradient(circle,rgba(255,215,0,.1),transparent);top:42%;right:12%;animation-duration:7s;animation-delay:-2s;}
+  @keyframes orbF{0%,100%{transform:translateY(0) scale(1);}50%{transform:translateY(-22px) scale(1.08);}}
+
+  .bento-wrap{
+    position:relative;z-index:2;
+    width:100%;height:100%;
+    display:flex;flex-direction:column;
+    justify-content:center;align-items:center;
+    padding:clamp(24px,4vw,48px) clamp(20px,3.5vw,40px);
+    gap:clamp(14px,2vw,22px);
+    overflow-y:auto;
+  }
+
+  /* brand */
+  .showcase-brand{text-align:center;}
+  .showcase-brand h1{
+    font-family:'Tajawal',sans-serif;
+    font-size:clamp(24px,3vw,38px);font-weight:900;
+    background:linear-gradient(135deg,#fff 0%,var(--gold) 50%,var(--pink) 100%);
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+    letter-spacing:-1px;margin-bottom:5px;
+  }
+  .showcase-brand p{font-size:clamp(11px,1.2vw,13px);color:rgba(255,255,255,.5);font-weight:500;}
+
+  /* bento grid */
+  .bento-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:clamp(8px,1.2vw,14px);
+    width:100%;max-width:440px;
+  }
+  .b-card{
+    border-radius:var(--r-lg);
+    padding:clamp(14px,1.8vw,22px) clamp(12px,1.5vw,20px);
+    position:relative;overflow:hidden;cursor:pointer;
+    transition:var(--t);
+    border:1px solid rgba(255,255,255,.06);
+  }
+  .b-card:hover{transform:translateY(-4px) scale(1.02);border-color:rgba(255,255,255,.15);}
+  .b-articles{grid-column:1;background:linear-gradient(135deg,#1a0a2e,#2d1060);box-shadow:0 8px 32px rgba(139,47,201,.3);}
+  .b-articles::before{content:'';position:absolute;top:-30px;right:-30px;width:110px;height:110px;background:radial-gradient(circle,rgba(139,47,201,.4),transparent 70%);}
+  .b-reviews{grid-column:2;background:linear-gradient(135deg,#0a0a1f,#0f1a40);box-shadow:0 8px 32px rgba(37,99,235,.3);}
+  .b-reviews::before{content:'';position:absolute;bottom:-20px;left:-20px;width:90px;height:90px;background:radial-gradient(circle,rgba(37,99,235,.4),transparent 70%);}
+  .b-activities{
+    grid-column:1/-1;
+    background:linear-gradient(135deg,#1a0a10,#2e0a1a);
+    box-shadow:0 8px 32px rgba(255,107,157,.25);
+    display:flex;align-items:center;gap:clamp(12px,1.8vw,22px);
+    flex-wrap:wrap;
+  }
+  .b-activities::before{content:'';position:absolute;top:-40px;right:-40px;width:140px;height:140px;background:radial-gradient(circle,rgba(255,107,157,.28),transparent 70%);}
+
+  .b-tag{
+    display:inline-flex;align-items:center;gap:6px;
+    padding:4px 12px;border-radius:99px;
+    font-size:clamp(9px,1vw,11px);font-weight:700;
+    margin-bottom:clamp(8px,1vw,12px);width:fit-content;
+    position:relative;z-index:1;
+  }
+  .b-tag.purple{background:rgba(139,47,201,.25);color:var(--purple-l);border:1px solid rgba(139,47,201,.3);}
+  .b-tag.blue{background:rgba(37,99,235,.25);color:var(--blue-l);border:1px solid rgba(37,99,235,.3);}
+  .b-tag.pink{background:rgba(255,107,157,.25);color:var(--pink-l);border:1px solid rgba(255,107,157,.3);}
+
+  .b-card h3{
+    font-size:clamp(12px,1.3vw,15px);font-weight:800;
+    font-family:'Tajawal',sans-serif;color:#fff;
+    margin-bottom:5px;position:relative;z-index:1;line-height:1.4;
+  }
+  .b-card p{font-size:clamp(10px,1vw,12px);color:rgba(255,255,255,.55);line-height:1.7;position:relative;z-index:1;font-weight:500;}
+
+  .mini-articles{margin-top:10px;display:flex;flex-direction:column;gap:6px;position:relative;z-index:1;}
+  .mini-art-item{
+    display:flex;align-items:center;gap:7px;
+    padding:6px 9px;background:rgba(255,255,255,.05);
+    border-radius:8px;border:1px solid rgba(255,255,255,.06);transition:var(--t);
+  }
+  .mini-art-item:hover{background:rgba(139,47,201,.2);border-color:rgba(139,47,201,.3);}
+  .mini-art-item .dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+  .mini-art-item span{font-size:clamp(9px,.95vw,11px);color:rgba(255,255,255,.7);font-weight:600;}
+
+  .mini-reviews{margin-top:10px;display:flex;flex-direction:column;gap:7px;position:relative;z-index:1;transition:var(--t);}
+  .mini-review{padding:8px 10px;background:rgba(255,255,255,.04);border-radius:9px;border:1px solid rgba(37,99,235,.15);}
+  .mini-review .stars{color:var(--gold);font-size:10px;margin-bottom:2px;}
+  .mini-review .text{font-size:clamp(9px,.95vw,11px);color:rgba(255,255,255,.6);font-weight:500;line-height:1.5;}
+  .mini-review .name{font-size:10px;color:var(--blue-l);font-weight:700;margin-top:2px;}
+
+  .activity-icons{display:flex;gap:10px;flex-wrap:wrap;position:relative;z-index:1;margin-top:10px;}
+  .act-icon{
+    width:clamp(36px,4vw,44px);height:clamp(36px,4vw,44px);
+    border-radius:11px;display:flex;align-items:center;justify-content:center;
+    font-size:clamp(14px,1.6vw,18px);transition:var(--t);cursor:pointer;
+  }
+  .act-icon:hover{transform:scale(1.18) rotate(6deg);}
+
+  .live-badge{
+    position:relative;z-index:1;text-align:center;flex-shrink:0;
+  }
+  .live-icon{
+    width:clamp(48px,5.5vw,64px);height:clamp(48px,5.5vw,64px);
+    border-radius:50%;
+    background:rgba(255,107,157,.15);border:2px solid rgba(255,107,157,.3);
+    display:flex;align-items:center;justify-content:center;
+    font-size:clamp(18px,2.2vw,24px);margin:0 auto 6px;
+    animation:livePulse 2s ease infinite;
+  }
+  .live-num{font-size:clamp(16px,2vw,22px);font-weight:900;color:var(--pink);font-family:'Tajawal',sans-serif;}
+  @keyframes livePulse{0%,100%{box-shadow:0 0 0 0 rgba(255,107,157,.4);}50%{box-shadow:0 0 0 10px rgba(255,107,157,0);}}
+
+  /* showcase stats */
+  .showcase-stats{display:flex;justify-content:center;gap:clamp(16px,2.5vw,30px);}
+  .ss-item{text-align:center;}
+  .ss-num{font-size:clamp(18px,2.2vw,24px);font-weight:900;font-family:'Tajawal',sans-serif;}
+  .ss-lbl{font-size:clamp(9px,.9vw,11px);color:rgba(255,255,255,.4);font-weight:600;margin-top:1px;}
+
+  /* vertical divider */
+  .v-divider{
+    position:absolute;top:8%;bottom:8%;left:50%;
+    width:1px;
+    background:linear-gradient(180deg,transparent,rgba(139,47,201,.35) 20%,rgba(255,215,0,.2) 50%,rgba(255,107,157,.2) 80%,transparent);
+    pointer-events:none;z-index:10;
+  }
+
+  /* ═══════════════════════════════════════════
+     RIGHT — FORM SIDE
+  ═══════════════════════════════════════════ */
+  .form-side{
+    display:flex;flex-direction:column;
+    justify-content:center;align-items:center;
+    padding:clamp(28px,4vw,56px) clamp(20px,4vw,56px);
+    background:rgba(255,255,255,.015);
+    border-right:1px solid rgba(255,255,255,.05);
+    position:relative;overflow:hidden;
+    overflow-y:auto;
+    min-height:100vh;
+  }
+  .form-side::before{
+    content:'';position:absolute;inset:0;
+    background:linear-gradient(180deg,rgba(139,47,201,.04) 0%,transparent 40%,rgba(255,215,0,.025) 100%);
+    pointer-events:none;
+  }
+
+  .form-inner{width:100%;max-width:420px;position:relative;z-index:1;}
+
+  /* back link */
+  .back-link{
+    display:inline-flex;align-items:center;gap:8px;
+    color:rgba(255,255,255,.4);font-size:13px;font-weight:600;
+    text-decoration:none;margin-bottom:clamp(20px,3vw,36px);
+    transition:var(--t);
+  }
+  .back-link:hover{color:rgba(255,255,255,.8);}
+  .back-link i{transition:var(--t);}
+  .back-link:hover i{transform:translateX(4px);}
+
+  /* form header */
+  .form-header{margin-bottom:clamp(18px,2.5vw,30px);}
+  .form-header .greeting{
+    font-size:11px;font-weight:800;color:var(--gold);
+    letter-spacing:2px;text-transform:uppercase;
+    margin-bottom:8px;display:flex;align-items:center;gap:8px;
+  }
+  .form-header .greeting::before{content:'';width:22px;height:2px;background:var(--gold);border-radius:99px;}
+  .form-header h2{
+    font-family:'Tajawal',sans-serif;
+    font-size:clamp(24px,3vw,34px);font-weight:900;color:#fff;
+    line-height:1.2;margin-bottom:7px;
+  }
+  .form-header p{font-size:clamp(13px,1.3vw,15px);color:rgba(255,255,255,.42);font-weight:500;}
+
+  /* tabs */
+  .auth-tabs{
+    display:flex;gap:0;
+    background:rgba(255,255,255,.05);
+    border-radius:var(--r-md);padding:4px;
+    margin-bottom:clamp(18px,2.5vw,28px);
+    border:1px solid rgba(255,255,255,.07);
+  }
+  .tab-btn{
+    flex:1;padding:clamp(9px,1.2vw,12px);
+    font-family:'Cairo',sans-serif;font-weight:700;font-size:clamp(13px,1.3vw,14px);
+    border:none;border-radius:var(--r-sm);cursor:pointer;transition:var(--t);
+    color:rgba(255,255,255,.38);background:none;
+  }
+  .tab-btn.active{
+    background:linear-gradient(135deg,var(--purple),var(--blue));
+    color:#fff;box-shadow:0 4px 18px rgba(139,47,201,.45);
+  }
+
+  /* form panels */
+  .form-panel{display:none;}
+  .form-panel.active{display:flex;flex-direction:column;gap:clamp(12px,1.5vw,16px);animation:fadeUp .3s ease;}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+
+  /* input groups */
+  .inp-group{display:flex;flex-direction:column;gap:6px;}
+  .inp-group label{
+    font-size:clamp(11px,1.1vw,13px);font-weight:700;
+    color:rgba(255,255,255,.52);
+    display:flex;align-items:center;gap:7px;
+  }
+  .inp-group label i{color:var(--purple-l);font-size:11px;}
+  .inp-wrap{position:relative;}
+  .inp-wrap input{
+    width:100%;
+    padding:clamp(11px,1.3vw,14px) 44px clamp(11px,1.3vw,14px) 16px;
+    background:rgba(255,255,255,.05);
+    border:1px solid rgba(255,255,255,.09);
+    border-radius:var(--r-md);
+    color:#fff;font-family:'Cairo',sans-serif;
+    font-size:clamp(13px,1.3vw,14px);font-weight:600;outline:none;
+    transition:var(--t);
+    -webkit-appearance:none;
+  }
+  .inp-wrap input::placeholder{color:rgba(255,255,255,.2);font-weight:400;}
+  .inp-wrap input:focus{
+    background:rgba(139,47,201,.09);
+    border-color:rgba(139,47,201,.55);
+    box-shadow:0 0 0 4px rgba(139,47,201,.12);
+  }
+  .inp-icon{
+    position:absolute;right:15px;top:50%;transform:translateY(-50%);
+    color:rgba(255,255,255,.22);font-size:13px;transition:var(--t);pointer-events:none;
+  }
+  .inp-icon.clickable{pointer-events:all;cursor:pointer;}
+  .inp-wrap input:focus ~ .inp-icon{color:var(--purple-l);}
+
+  /* role row */
+  .role-row{display:flex;gap:10px;}
+  .role-opt{flex:1;cursor:pointer;}
+  .role-opt input{display:none;}
+  .role-box{
+    display:flex;align-items:center;justify-content:center;gap:8px;
+    padding:clamp(9px,1.2vw,12px);
+    background:rgba(255,255,255,.04);
+    border:1px solid rgba(255,255,255,.09);
+    border-radius:var(--r-md);
+    font-size:clamp(12px,1.2vw,13px);font-weight:700;color:rgba(255,255,255,.45);
+    transition:var(--t);
+  }
+  .role-opt input:checked + .role-box{
+    background:rgba(139,47,201,.16);border-color:rgba(139,47,201,.55);
+    color:var(--purple-l);box-shadow:0 0 0 3px rgba(139,47,201,.12);
+  }
+
+  /* submit button */
+  .submit-btn{
+    width:100%;padding:clamp(13px,1.6vw,16px);
+    background:linear-gradient(135deg,var(--purple),var(--blue));
+    color:#fff;font-family:'Cairo',sans-serif;
+    font-size:clamp(14px,1.4vw,15px);font-weight:800;
+    border:none;border-radius:var(--r-md);cursor:pointer;transition:var(--t);
+    box-shadow:0 8px 28px rgba(139,47,201,.4);
+    position:relative;overflow:hidden;
+    display:flex;align-items:center;justify-content:center;gap:9px;
+    margin-top:4px;
+  }
+  .submit-btn::before{
+    content:'';position:absolute;inset:0;
+    background:linear-gradient(135deg,var(--pink),var(--gold));
+    opacity:0;transition:var(--t);
+  }
+  .submit-btn:hover::before{opacity:.14;}
+  .submit-btn:hover{transform:translateY(-3px);box-shadow:0 14px 40px rgba(139,47,201,.5);}
+  .submit-btn:active{transform:translateY(0);}
+  .submit-btn span{position:relative;z-index:1;}
+
+  /* divider */
+  .divider{display:flex;align-items:center;gap:12px;}
+  .divider::before,.divider::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.07);}
+  .divider span{font-size:12px;color:rgba(255,255,255,.22);font-weight:600;}
+
+  /* whatsapp btn */
+  .wa-btn{
+    width:100%;padding:clamp(11px,1.4vw,13px);
+    background:rgba(37,211,102,.09);
+    border:1px solid rgba(37,211,102,.22);
+    color:#25D366;font-family:'Cairo',sans-serif;
+    font-size:clamp(13px,1.3vw,14px);font-weight:700;
+    border-radius:var(--r-md);cursor:pointer;transition:var(--t);
+    display:flex;align-items:center;justify-content:center;gap:9px;
+    text-decoration:none;
+  }
+  .wa-btn:hover{background:rgba(37,211,102,.17);transform:translateY(-2px);box-shadow:0 8px 24px rgba(37,211,102,.18);}
+
+  /* form footer */
+  .form-footer{
+    margin-top:clamp(16px,2vw,24px);text-align:center;
+    font-size:clamp(11px,1.1vw,12px);color:rgba(255,255,255,.22);font-weight:500;
+  }
+  .form-footer a{color:var(--purple-l);text-decoration:none;font-weight:700;}
+  .form-footer a:hover{color:var(--gold);}
+
+  /* hidden parent field */
+  .parent-field{display:none;}
+
+  /* ═══════════════════════════════════════════
+     MOBILE-FIRST RESPONSIVE
+  ═══════════════════════════════════════════ */
+
+  /* ── TABLET PORTRAIT (≤900px) — stack vertically ── */
+  @media (max-width:900px){
+    body{overflow:auto;}
+    .auth-page{
+      grid-template-columns:1fr;
+      grid-template-rows:auto 1fr;
+    }
+    .v-divider{display:none;}
+
+    /* showcase becomes a top banner */
+    .showcase-side{
+      min-height:auto;
+      height:auto;
+    }
+    .bento-wrap{
+      padding:clamp(20px,4vw,36px) clamp(16px,4vw,32px);
+      gap:16px;
+    }
+    .bento-grid{max-width:600px;}
+
+    /* form side full width below */
+    .form-side{
+      min-height:auto;
+      border-right:none;
+      border-top:1px solid rgba(255,255,255,.05);
+      padding:36px clamp(20px,5vw,48px) 48px;
+    }
+    .form-inner{max-width:520px;}
+  }
+
+  /* ── PHONE LANDSCAPE / SMALL TABLET (≤700px) ── */
+  @media (max-width:700px){
+    .bento-grid{
+      grid-template-columns:1fr 1fr;
+      max-width:100%;
+    }
+    .showcase-brand h1{font-size:clamp(20px,6vw,28px);}
+    .bento-wrap{padding:18px;}
+  }
+
+  /* ── PHONE PORTRAIT (≤520px) ── */
+  @media (max-width:520px){
+    .bento-grid{
+      grid-template-columns:1fr;
+    }
+    .b-articles,.b-reviews{grid-column:1;}
+    .b-activities{
+      grid-column:1;
+      flex-direction:column;
+      align-items:flex-start;
+    }
+    .live-badge{align-self:center;width:100%;margin-top:8px;}
+
+    .form-side{
+      padding:28px 20px 40px;
+    }
+    .form-inner{max-width:100%;}
+    .form-header h2{font-size:clamp(22px,7vw,28px);}
+
+    /* hide orbs on very small screens for perf */
+    .orb-3{display:none;}
+  }
+
+  /* ── ULTRA-WIDE SCREENS (≥1600px) ── */
+  @media (min-width:1600px){
+    .bento-grid{max-width:500px;}
+    .form-inner{max-width:460px;}
+    .showcase-brand h1{font-size:44px;}
+    .form-header h2{font-size:38px;}
+  }
+
+  /* ── LANDSCAPE PHONE (height ≤ 500px) ── */
+  @media (max-height:500px) and (orientation:landscape){
+    .auth-page{grid-template-columns:1fr 1fr;min-height:100vh;}
+    .showcase-side,.form-side{overflow-y:auto;}
+    .bento-wrap,.form-side{padding:16px 20px;}
+    .back-link{margin-bottom:12px;}
+    .form-header{margin-bottom:12px;}
+    .auth-tabs{margin-bottom:12px;}
+    .form-panel.active{gap:10px;}
+    .orb{display:none;}
+    .showcase-stats{display:none;}
+    .v-divider{display:block;}
+  }
+  </style>
+</head>
+<body>
+
+<div class="auth-page">
+
+  <!-- ══════════════════════════════════════
+       LEFT / TOP — BENTO SHOWCASE
+  ══════════════════════════════════════ -->
+  <div class="showcase-side">
+    <video class="showcase-video" autoplay loop muted playsinline>
+      <source src="photo/intro_video.mp4" type="video/mp4">
+    </video>
+    <div class="showcase-overlay"></div>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+
+    <div class="bento-wrap">
+
+      <div class="showcase-brand">
+        <h1>English Course</h1>
+        <p>منصتك التعليمية الأولى لإتقان اللغة الإنجليزية</p>
+      </div>
+
+      <div class="bento-grid">
+
+        <!-- Card 1 — مقالات -->
+        <div class="b-card b-articles">
+          <div class="b-tag purple"><i class="fa-solid fa-newspaper"></i> المقالات</div>
+          <h3>أحدث المقالات</h3>
+          <div class="mini-articles">
+            <div class="mini-art-item">
+              <div class="dot" style="background:#B86EE8"></div>
+              <span>10 أخطاء شائعة في الإنجليزية</span>
+            </div>
+            <div class="mini-art-item">
+              <div class="dot" style="background:#FFD700"></div>
+              <span>طلاقة في 90 يوماً — الطريقة الصحيحة</span>
+            </div>
+            <div class="mini-art-item">
+              <div class="dot" style="background:#FF6B9D"></div>
+              <span>أسرار قواعد اللغة المتقدمة</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2 — آراء الطلاب -->
+        <div class="b-card b-reviews">
+          <div class="b-tag blue"><i class="fa-solid fa-star"></i> آراء الطلاب</div>
+          <h3>يقولون عنّا</h3>
+          <div class="mini-reviews" id="reviews-list">
+            <div class="mini-review">
+              <div class="stars">★★★★★</div>
+              <div class="text">"تجربة رائعة غيّرت مستواي كلياً"</div>
+              <div class="name">— أحمد السيد</div>
+            </div>
+            <div class="mini-review">
+              <div class="stars">★★★★★</div>
+              <div class="text">"أفضل منصة عربية للإنجليزية"</div>
+              <div class="name">— سارة محمد</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3 — الأنشطة -->
+        <div class="b-card b-activities">
+          <div style="flex:1;position:relative;z-index:1;min-width:0">
+            <div class="b-tag pink"><i class="fa-solid fa-gamepad"></i> الأنشطة</div>
+            <h3>تعلّم بطريقة ممتعة</h3>
+            <p>غرف محادثة · ألعاب تعليمية · مسابقات أسبوعية</p>
+            <div class="activity-icons">
+              <div class="act-icon" style="background:rgba(255,107,157,.15);color:#FF6B9D"><i class="fa-solid fa-comments"></i></div>
+              <div class="act-icon" style="background:rgba(255,215,0,.15);color:#FFD700"><i class="fa-solid fa-gamepad"></i></div>
+              <div class="act-icon" style="background:rgba(139,47,201,.2);color:#B86EE8"><i class="fa-solid fa-trophy"></i></div>
+              <div class="act-icon" style="background:rgba(37,99,235,.15);color:#60A5FA"><i class="fa-solid fa-microphone"></i></div>
+              <div class="act-icon" style="background:rgba(16,185,129,.15);color:#34d399"><i class="fa-solid fa-clipboard-check"></i></div>
+            </div>
+          </div>
+          <div class="live-badge">
+            <div class="live-icon"><i class="fa-solid fa-bolt" style="color:#FF6B9D"></i></div>
+            <div style="font-size:10px;color:rgba(255,255,255,.35);font-weight:600">نشاط حي</div>
+            <div class="live-num">+48</div>
+            <div style="font-size:10px;color:rgba(255,255,255,.3)">مشارك الآن</div>
+          </div>
+        </div>
+
+      </div><!-- /bento-grid -->
+
+      <div class="showcase-stats">
+        <div class="ss-item">
+          <div class="ss-num" style="background:linear-gradient(135deg,#FFD700,#FF6B9D);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">+1200</div>
+          <div class="ss-lbl">طالب نشط</div>
+        </div>
+        <div class="ss-item">
+          <div class="ss-num" style="background:linear-gradient(135deg,#8B2FC9,#60A5FA);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">12</div>
+          <div class="ss-lbl">مستوى</div>
+        </div>
+        <div class="ss-item">
+          <div class="ss-num" style="background:linear-gradient(135deg,#FF6B9D,#FFD700);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">98%</div>
+          <div class="ss-lbl">رضا الطلاب</div>
+        </div>
+      </div>
+
+    </div><!-- /bento-wrap -->
+  </div><!-- /showcase-side -->
+
+  <!-- vertical divider (desktop only) -->
+  <div class="v-divider"></div>
+
+  <!-- ══════════════════════════════════════
+       RIGHT / BOTTOM — FORM
+  ══════════════════════════════════════ -->
+  <div class="form-side">
+    <div class="form-inner">
+
+      <a href="index.html" class="back-link" target="_self">
+        <i class="fa-solid fa-arrow-left"></i>
+        العودة للرئيسية
+      </a>
+
+      <div class="form-header">
+        <div class="greeting">English Course</div>
+        <h2 id="form-title">أهلاً بعودتك 👋</h2>
+        <p id="form-subtitle">سجّل دخولك لمتابعة رحلتك التعليمية</p>
+      </div>
+
+      <div class="auth-tabs">
+        <button class="tab-btn active" id="tab-login" onclick="switchTab('login')">تسجيل الدخول</button>
+        <button class="tab-btn" id="tab-signup" onclick="switchTab('signup')">إنشاء حساب</button>
+      </div>
+
+      <!-- LOGIN -->
+      <div class="form-panel active" id="panel-login">
+        <div class="inp-group">
+          <label><i class="fa-solid fa-envelope"></i> البريد الإلكتروني</label>
+          <div class="inp-wrap">
+            <input type="email" id="login-email" placeholder="example@email.com" autocomplete="email">
+            <i class="inp-icon fa-solid fa-envelope"></i>
+          </div>
+        </div>
+        <div class="inp-group">
+          <label><i class="fa-solid fa-lock"></i> كلمة المرور</label>
+          <div class="inp-wrap">
+            <input type="password" id="login-password" placeholder="••••••••" autocomplete="current-password">
+            <i class="inp-icon clickable fa-solid fa-lock" id="tog-login" onclick="togglePwd('login-password','tog-login')"></i>
+          </div>
+        </div>
+        <button class="submit-btn" onclick="handleLogin()">
+          <span><i class="fa-solid fa-arrow-right-to-bracket"></i> دخول للمنصة</span>
+        </button>
+        <div class="divider"><span>أو</span></div>
+        <a href="https://wa.me/963999999999" class="wa-btn" target="_blank">
+          <i class="fa-brands fa-whatsapp" style="font-size:18px"></i>
+          تواصل معنا عبر واتساب
+        </a>
+      </div>
+
+      <!-- SIGNUP -->
+      <div class="form-panel" id="panel-signup">
+        <div class="inp-group">
+          <label><i class="fa-solid fa-users-gear"></i> إنشاء الحساب كـ</label>
+          <div class="role-row">
+            <label class="role-opt">
+              <input type="radio" name="role" value="student" checked onchange="onRoleChange()">
+              <div class="role-box"><i class="fa-solid fa-user-graduate"></i> طالب</div>
+            </label>
+            <label class="role-opt">
+              <input type="radio" name="role" value="parent" onchange="onRoleChange()">
+              <div class="role-box"><i class="fa-solid fa-user-tie"></i> ولي أمر</div>
+            </label>
+          </div>
+        </div>
+        <div class="inp-group parent-field" id="parent-field">
+          <label><i class="fa-solid fa-key"></i> الرقم الدراسي لطفلك</label>
+          <div class="inp-wrap">
+            <input type="text" id="child-id" placeholder="مثال: #EDU-123456">
+            <i class="inp-icon fa-solid fa-id-card"></i>
+          </div>
+        </div>
+        <div class="inp-group">
+          <label><i class="fa-solid fa-user"></i> الاسم الكامل</label>
+          <div class="inp-wrap">
+            <input type="text" id="reg-name" placeholder="الاسم الثنائي">
+            <i class="inp-icon fa-solid fa-user"></i>
+          </div>
+        </div>
+        <div class="inp-group">
+          <label><i class="fa-solid fa-envelope"></i> البريد الإلكتروني</label>
+          <div class="inp-wrap">
+            <input type="email" id="reg-email" placeholder="example@email.com">
+            <i class="inp-icon fa-solid fa-envelope"></i>
+          </div>
+        </div>
+        <div class="inp-group">
+          <label><i class="fa-solid fa-lock"></i> كلمة المرور</label>
+          <div class="inp-wrap">
+            <input type="password" id="reg-password" placeholder="8 أحرف على الأقل">
+            <i class="inp-icon clickable fa-solid fa-lock" id="tog-reg" onclick="togglePwd('reg-password','tog-reg')"></i>
+          </div>
+        </div>
+        <button class="submit-btn" onclick="handleSignup()">
+          <span><i class="fa-solid fa-user-plus"></i> إنشاء الحساب</span>
+        </button>
+      </div>
+
+      <div class="form-footer">
+        بتسجيلك أنت توافق على
+        <a href="#">شروط الاستخدام</a> و
+        <a href="#">سياسة الخصوصية</a>
+      </div>
+
+    </div>
+  </div>
+
+</div><!-- /auth-page -->
+
+<script>
+/* ─ TABS ─ */
+function switchTab(t){
+  ['login','signup'].forEach(k=>{
+    document.getElementById('panel-'+k).classList.toggle('active',k===t);
+    document.getElementById('tab-'+k).classList.toggle('active',k===t);
+  });
+  const T={login:{h:'أهلاً بعودتك 👋',p:'سجّل دخولك لمتابعة رحلتك التعليمية'},signup:{h:'ابدأ رحلتك الآن ✨',p:'انضم إلى أكثر من ١٢٠٠ طالب يتعلمون معنا'}};
+  document.getElementById('form-title').textContent=T[t].h;
+  document.getElementById('form-subtitle').textContent=T[t].p;
+}
+
+/* ─ ROLE ─ */
+function onRoleChange(){
+  const p=document.querySelector('input[name="role"]:checked').value==='parent';
+  document.getElementById('parent-field').style.display=p?'flex':'none';
+}
+
+/* ─ PASSWORD TOGGLE ─ */
+function togglePwd(id,iconId){
+  const i=document.getElementById(id),ic=document.getElementById(iconId);
+  const s=i.type==='password';
+  i.type=s?'text':'password';
+  ic.className='inp-icon clickable fa-solid fa-'+(s?'eye-slash':'lock');
+}
+
+/* ─ SHAKE ─ */
+function shake(id){
+  const e=document.getElementById(id);
+  e.style.animation='none';e.offsetHeight;
+  e.style.animation='shakeX .4s ease';
+  setTimeout(()=>e.style.animation='',420);
+}
+const sKf=document.createElement('style');
+sKf.textContent='@keyframes shakeX{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-6px)}80%{transform:translateX(6px)}}';
+document.head.appendChild(sKf);
+
+/* ─ SUBMIT ─ */
+function handleLogin(){
+  const e=document.getElementById('login-email').value,p=document.getElementById('login-password').value;
+  if(!e||!p){shake('panel-login');return;}
+  if(window.loginUser)loginUser(e,p);
+}
+function handleSignup(){
+  const n=document.getElementById('reg-name').value,e=document.getElementById('reg-email').value,p=document.getElementById('reg-password').value;
+  if(!n||!e||!p){shake('panel-signup');return;}
+  if(window.registerUser)registerUser(n,e,p);
+}
+
+/* ─ ROTATING REVIEWS ─ */
+const rv=[
+  {t:'"تجربة رائعة غيّرت مستواي كلياً"',n:'أحمد السيد',s:5},
+  {t:'"أفضل منصة عربية للإنجليزية"',n:'سارة محمد',s:5},
+  {t:'"تعلمت في أسبوعين ما لم أتعلمه بسنة"',n:'عمر خالد',s:5},
+  {t:'"المدرسون رائعون والمنهج ممتاز"',n:'ليلى أحمد',s:5},
+  {t:'"أنصح به كل من يريد الاحتراف"',n:'محمد علي',s:5},
+];
+let ri=0;
+function rotateRv(){
+  const el=document.getElementById('reviews-list');if(!el)return;
+  el.style.cssText='opacity:0;transform:translateY(8px);transition:all .5s ease';
+  setTimeout(()=>{
+    const a=rv[ri%rv.length],b=rv[(ri+1)%rv.length];
+    el.innerHTML=[a,b].map(r=>`<div class="mini-review"><div class="stars">${'★'.repeat(r.s)}</div><div class="text">${r.t}</div><div class="name">— ${r.n}</div></div>`).join('');
+    el.style.cssText='opacity:1;transform:translateY(0);transition:all .5s ease';
+    ri++;
+  },300);
+}
+setInterval(rotateRv,4500);
+
+/* ─ LIVE COUNT PULSE ─ */
+let lc=48;
+setInterval(()=>{
+  lc+=Math.floor(Math.random()*3)-1;
+  lc=Math.max(40,Math.min(80,lc));
+  document.querySelector('.live-num').textContent='+'+lc;
+},3000);
+</script>
+
+<script>
+const API_BASE_URL = 'http://localhost:5000';
+
+/* ─ AUTHENTICATION FUNCTIONS ─ */
+async function loginUser(email, password) {
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      alert('أهلاً بك يا ' + data.user.name);
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('user', JSON.stringify(data.user));
+
+      // Redirect based on role
+      if (data.user.role === 'admin') {
+        window.location.href = 'admin.html';
+      } else if (data.user.role === 'parent') {
+        window.location.href = 'parent.html';
+      } else {
+        window.location.href = 'index.html'; // Default for students or other roles
+      }
+    } else {
+      alert('خطأ في تسجيل الدخول: ' + data.error);
+    }
+  } catch (error) {
+    console.error("Login error:", error);
+    alert('تعذر الاتصال بالسيرفر. يرجى المحاولة لاحقاً.');
+  }
+}
+
+async function registerUser(name, email, password) {
+  const role = document.querySelector('input[name="role"]:checked').value;
+  const childStudentId = role === 'parent' ? document.getElementById('child-id').value : undefined;
+
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/register`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, email, password, role, child_student_id: childStudentId })
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      let msg = 'تم إنشاء الحساب بنجاح!';
+      if (data.user.student_id) msg += '\nرقمك الدراسي هو: ' + data.user.student_id;
+      alert(msg);
+      switchTab('login'); // Switch to login tab after successful registration
+      // Optionally pre-fill login email
+      document.getElementById('login-email').value = email;
+    } else {
+      alert('خطأ في إنشاء الحساب: ' + data.error);
+    }
+  } catch (error) {
+    console.error("Registration error:", error);
+    alert('تعذر الاتصال بالسيرفر. يرجى المحاولة لاحقاً.');
+  }
+}
+
+/* ─ SHOWCASE DYNAMIC CONTENT ─ */
+async function loadShowcaseBlogs() {
+  const miniArticles = document.querySelector('.mini-articles');
+  if (!miniArticles) return;
+
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/blogs`);
+    const blogs = await response.json();
+
+    if (blogs && blogs.length > 0) {
+      miniArticles.innerHTML = blogs.slice(0, 3).map(b => `
+        <div class="mini-art-item">
+          <div class="dot" style="background:${getRandomColor()}"></div>
+          <span>${b.title}</span>
+        </div>
+      `).join('');
+    } else {
+      miniArticles.innerHTML = '<div class="mini-art-item"><span>لا توجد مقالات حالياً.</span></div>';
+    }
+  } catch (e) {
+    console.error("Error loading showcase blogs:", e);
+    miniArticles.innerHTML = '<div class="mini-art-item"><span>تعذر تحميل المقالات.</span></div>';
+  }
+}
+
+function getRandomColor() {
+  const colors = ['#B86EE8', '#FFD700', '#FF6B9D', '#60A5FA', '#34d399'];
+  return colors[Math.floor(Math.random() * colors.length)];
+}
+
+/* ─ INITIALIZATION ─ */
+document.addEventListener('DOMContentLoaded', () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const tab = urlParams.get('tab');
+  if (tab === 'signup') {
+    switchTab('signup');
+  } else {
+    switchTab('login'); // Default to login
+  }
+  onRoleChange(); // Initialize parent field visibility
+  loadShowcaseBlogs(); // Load dynamic blogs
+  setInterval(rotateRv, 4500); // Start rotating reviews
+});
+</script>
+</body>
+</html>
