@@ -10,8 +10,12 @@ const fs = require('fs');
 
 // ===== إعداد السيرفر الأساسي =====
 const app = express();
+const server = http.createServer(app); 
+const io = socketIo(server, { 
+  cors: { origin: '*', methods: ['GET', 'POST', 'PATCH', 'DELETE'] } 
+});
 
-// 🔥 إعدادات CORS للسماح لموقع Netlify بالاتصال (يجب أن تكون هنا بالضبط) 🔥
+// 🔥 إعدادات CORS للسماح لموقع Netlify بالاتصال (مكتوبة مرة واحدة فقط) 🔥
 app.use(cors({
     origin: '*', 
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
@@ -20,27 +24,9 @@ app.use(cors({
 
 // السماح للسيرفر بقراءة البيانات
 app.use(express.json());
-
-// -- باقي الكود الخاص بك (المسارات وغيرها) يبقى كما هو تحت هذا السطر --
-const cors = require('cors'); // تأكد من وجود هذا السطر
-
-const app = express();
-
-// 🔥 الحل السحري لمشكلة الـ CORS (يجب أن يكون هنا في الأعلى قبل أي شيء آخر) 🔥
-app.use(cors({
-    origin: '*', // هذا السطر يسمح لموقع Netlify وأي موقع آخر بالاتصال
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization']
-}));
-
-// السماح للسيرفر بقراءة بيانات JSON المرسلة
-app.use(express.json());
-
-// -- هنا تبدأ باقي مسارات موقعك (Routes) --
-const server = http.createServer(app); 
-const io = socketIo(server, { 
-  cors: { origin: '*', methods: ['GET', 'POST', 'PATCH', 'DELETE'] } 
-});
+app.use(express.urlencoded({ extended: true }));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/photo', express.static(path.join(__dirname, 'photo')));
 
 // ===== إنشاء مجلد الملفات وإعداد Multer =====
 if (!fs.existsSync('./uploads')){ fs.mkdirSync('./uploads'); }
@@ -49,13 +35,6 @@ const storage = multer.diskStorage({
     filename: function (req, file, cb) { cb(null, Date.now() + '-' + file.originalname.replace(/\s+/g, '-')); }
 });
 const upload = multer({ storage: storage });
-
-// ===== MIDDLEWARE =====
-app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-app.use('/photo', express.static(path.join(__dirname, 'photo')));
 
 // ===== MONGODB CONNECTION =====
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/english_course';
@@ -72,16 +51,14 @@ const Testimonial = require('./models/Testimonial');
 const Blog = require('./models/Blog');
 const Activity = require('./models/Activity');
 const Exam = require('./models/Exam');
-const Message = require('./models/Message'); // مودل الدردشة الجديد
+const Message = require('./models/Message');
 
 // ===== SOCKET.IO (نظام الدردشة الفورية) =====
-// إذا كان لديك ملف إشعارات قديم، سنبقيه يعمل:
 try { require('./socket')(io); } catch(e) { /* تجاهل إن لم يوجد */ }
 
 io.on('connection', (socket) => {
     console.log('💬 مستخدم جديد اتصل بالدردشة:', socket.id);
 
-    // الانضمام لغرفة محادثة
     socket.on('joinChat', async ({ userId, chatId }) => {
         const roomName = chatId === 'admin' || chatId.startsWith('group_') 
                          ? chatId : [userId, chatId].sort().join('_'); 
@@ -99,7 +76,6 @@ io.on('connection', (socket) => {
         } catch(e) { console.error('خطأ في جلب الرسائل', e); }
     });
 
-    // إرسال رسالة جديدة
     socket.on('sendMessage', async (data) => {
         try {
             const { senderId, senderName, receiverId, text, isGroup } = data;
@@ -121,10 +97,15 @@ const { auth, adminOnly } = require('./middleware/auth');
 const authRoutes = require('./routes/auth');
 app.set('auth', { auth, adminOnly });
 
+// ===== مسارات المصادقة (Auth) =====
+app.post('/api/register', authRoutes.register);
+app.post('/api/login', authRoutes.login);
+
 // ===== مسارات الزملاء (للدردشة) =====
 app.get('/api/users/peers', auth, async (req, res) => {
     try {
-const peers = await User.find({ role: 'student' }).select('name role avatar_url');        res.json(peers);
+        const peers = await User.find({ role: 'student' }).select('name role avatar_url');
+        res.json(peers);
     } catch (err) { res.status(500).json({ error: 'تعذر جلب الزملاء' }); }
 });
 
@@ -176,7 +157,7 @@ app.get('/api/parent/children', auth, async (req, res) => {
   } catch (err) { res.status(500).json({ error: 'تعذر جلب الأبناء' }); }
 });
 
-// ===== مسارات المقالات (Blogs) مع دعم رفع الملفات =====
+// ===== مسارات المقالات (Blogs) =====
 app.get('/api/blogs', async (req, res) => {
     try {
         const blogs = await Blog.find().sort({ createdAt: -1 });
@@ -191,7 +172,7 @@ app.post('/api/blogs', auth, adminOnly, upload.single('file'), async (req, res) 
             title: req.body.title,
             content: req.body.content,
             link: req.body.link || null,
-            file_url: fileUrl, // تخزين رابط الملف
+            file_url: fileUrl,
             author_id: req.user.id,
             author_name: 'إدارة المنصة'
         });
@@ -207,7 +188,7 @@ app.delete('/api/blogs/:id', auth, adminOnly, async (req, res) => {
     } catch (err) { res.status(500).json({ error: 'تعذر الحذف' }); }
 });
 
-// ===== مسارات الامتحانات والوظائف مع دعم رفع الملفات =====
+// ===== مسارات الامتحانات والوظائف =====
 app.get('/api/exams', auth, async (req, res) => {
     try {
         const exams = await Exam.find({ type: 'exam' }).sort({ createdAt: -1 });
@@ -229,7 +210,7 @@ app.post('/api/exams', auth, adminOnly, upload.single('file'), async (req, res) 
             title: req.body.title,
             description: req.body.description,
             type: req.body.type,
-            file_url: fileUrl, // تخزين رابط الملف
+            file_url: fileUrl,
             deadline: req.body.deadline
         });
         await newExam.save();
@@ -266,9 +247,8 @@ app.delete('/api/activities/:id', auth, async (req, res) => {
         res.json({ message: 'تم الحذف' });
     } catch (err) { res.status(500).json({ error: 'خطأ' }); }
 });
-// ==========================================
-// ===== مسارات الآراء والتقييمات (Testimonials) =====
-// ==========================================
+
+// ===== مسارات الآراء والتقييمات =====
 app.get('/api/testimonials', async (req, res) => {
     try {
         const testimonials = await Testimonial.find().sort({ createdAt: -1 });
@@ -289,24 +269,18 @@ app.post('/api/testimonials', auth, async (req, res) => {
     } catch (err) { res.status(500).json({ error: 'تعذر إضافة الرأي' }); }
 });
 
-// ==========================================
 // ===== تحديث الصورة الشخصية للطالب =====
-// ==========================================
 app.post('/api/student/avatar', auth, upload.single('avatar'), async (req, res) => {
     try {
         if (!req.file) return res.status(400).json({ error: 'الرجاء اختيار صورة' });
         const avatarUrl = `/uploads/${req.file.filename}`;
         
-        // تحديث رابط الصورة في حساب المستخدم في قاعدة البيانات
         const User = require('./models/User');
         await User.findByIdAndUpdate(req.user.id, { avatar_url: avatarUrl });
         
         res.json({ message: 'تم تحديث الصورة بنجاح', avatar_url: avatarUrl });
     } catch (err) { res.status(500).json({ error: 'خطأ في رفع الصورة' }); }
 });
-// ===== مسارات المصادقة (Auth) =====
-app.post('/api/register', authRoutes.register);
-app.post('/api/login', authRoutes.login);
 
 // ===== فحص حالة السيرفر =====
 app.get('/api/health', (req, res) => {
@@ -318,7 +292,7 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: 'Internal Server Error' });
 });
 
-// ===== تشغيل السيرفر الأساسي (مع Socket.io) =====
+// ===== تشغيل السيرفر الأساسي =====
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => {
   console.log(`🚀 السيرفر يعمل بقوة على المنفذ ${PORT}`);
