@@ -2,7 +2,6 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-app.use(cors());
 const http = require('http'); 
 const socketIo = require('socket.io');
 const multer = require('multer');
@@ -11,8 +10,18 @@ const fs = require('fs');
 
 // ===== إعداد السيرفر الأساسي =====
 const app = express();
-const express = require('express');
-const mongoose = require('mongoose');
+
+// 🔥 إعدادات CORS للسماح لموقع Netlify بالاتصال (يجب أن تكون هنا بالضبط) 🔥
+app.use(cors({
+    origin: '*', 
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
+// السماح للسيرفر بقراءة البيانات
+app.use(express.json());
+
+// -- باقي الكود الخاص بك (المسارات وغيرها) يبقى كما هو تحت هذا السطر --
 const cors = require('cors'); // تأكد من وجود هذا السطر
 
 const app = express();
