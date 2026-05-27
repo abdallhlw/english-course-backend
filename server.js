@@ -9,7 +9,17 @@ const path = require('path');
 const fs = require('fs');
 
 // ===== إعداد السيرفر الأساسي =====
-const app = express();
+// ===== 👁️ رادار المراقبة (لكي نرى أي طلب يصل للسيرفر في الشاشة السوداء) =====
+app.use((req, res, next) => {
+    console.log(`📩 وصل طلب جديد: ${req.method} ${req.url}`);
+    next();
+});
+
+// 🔥 المفتاح الشامل لـ CORS (يسمح بمرور أي موقع وأي بيانات بدون حظر) 🔥
+app.use(cors({
+    origin: function (origin, callback) { callback(null, true); },
+    credentials: true
+}));
 const server = http.createServer(app); 
 const io = socketIo(server, { 
   cors: { origin: '*', methods: ['GET', 'POST', 'PATCH', 'DELETE'] } 
