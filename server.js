@@ -44,6 +44,30 @@ const upload = multer({ storage: storage });
 // ===== MONGODB CONNECTION =====
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/english_course';
 mongoose.connect(MONGO_URI)
+  // ===== إضافة 10 تعليقات تلقائياً إذا كانت قاعدة البيانات فارغة =====
+const Testimonial = require('./models/Testimonial');
+const seedTestimonials = async () => {
+    try {
+        const count = await Testimonial.countDocuments();
+        if (count === 0) {
+            const dummyReviews = [
+                { name: "أحمد العلي", text: "منصة ممتازة جداً، الشرح مبسط والمدرسين قمة في التعاون.", stars: 5, status: "approved" },
+                { name: "سارة محمود", text: "الامتحانات الدورية ساعدتني كثيراً في معرفة نقاط ضعفي.", stars: 5, status: "approved" },
+                { name: "عمر خالد", text: "غرف المحادثة كسرت عندي حاجز الخوف من التحدث.", stars: 4, status: "approved" },
+                { name: "ريم حسن", text: "أفضل استثمار لوقتي، المنهج مرتب والواجبات مفيدة جداً.", stars: 5, status: "approved" },
+                { name: "يوسف النجار", text: "متابعة الإدارة المستمرة وتصحيح الوظائف بسرعة شيء رائع.", stars: 5, status: "approved" },
+                { name: "نور الدين", text: "تطور مستواي في الاستماع والقراءة بشكل ملحوظ خلال شهر.", stars: 4, status: "approved" },
+                { name: "ليلى سمير", text: "الواجهة سهلة الاستخدام، والمقالات الموجودة غنية بالمعلومات.", stars: 5, status: "approved" },
+                { name: "عبدالله زيد", text: "أنصح أي شخص يريد تعلم الإنجليزية بجدية أن يسجل هنا.", stars: 5, status: "approved" },
+                { name: "مريم فهد", text: "المسابقات والنشاطات التفاعلية تجعل التعلم ممتعاً وغير ممل.", stars: 5, status: "approved" },
+                { name: "طارق زياد", text: "شكراً لفريق العمل على هذا المجهود الجبار، هدفكم فعلاً أقوى أداء.", stars: 5, status: "approved" }
+            ];
+            await Testimonial.insertMany(dummyReviews);
+            console.log('✅ تم إضافة 10 تعليقات وهمية بنجاح!');
+        }
+    } catch (error) { console.error('خطأ في إضافة التعليقات:', error); }
+};
+mongoose.connection.once('open', () => { seedTestimonials(); });
   .then(() => console.log('✅ MongoDB Connected'))
   .catch(err => {
     console.error('❌ MongoDB Error:', err.message);
