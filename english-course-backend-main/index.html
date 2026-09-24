@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English Course</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="user.css">
+<base target="_blank">
+    <style>
+        /* تنسيق القائمة العلوية: أسود في الحالة العادية، وأبيض عند التفاعل */
+        .as ul li a { color: var(--black-soft) !important; transition: 0.3s; text-decoration: none; position: relative; z-index: 1; }
+        .as ul li a:hover, 
+        .as ul li a.active { color: #ffffff !important; font-weight: bold; }
+        .mobile-menu-btn { color: var(--black-soft); border: none; background: none; font-size: 24px; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <header class="main-header">
+        <img src="photo/aaa.jpg" alt="Logo" class="img">
+        <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="القائمة">
+           
+        </button>
+        <nav class="as">
+         <ul id="main-nav-links">
+    <li><a href="index.html" class="active">الرئيسية</a></li>
+    <li><a href="exams.html">الامتحانات</a></li>
+    <li><a href="homeworks.html">الوظائف</a></li>
+    <li><a href="#activities">النشاطات</a></li>
+    <li><a href="blog.html">المقالات</a></li>
+</ul>
+        </nav>
+        <div class="header-auth-section">
+            <!-- أزرار الزائر -->
+            <div class="auth-buttons" id="guest-auth">
+                <a href="login.html?tab=login" class="login">تسجيل الدخول</a>
+            </div>
+
+            <!-- قسم المستخدم المسجّل -->
+            <div class="user-logged-in" id="logged-in-auth" style="display: none;">
+                <!-- زر الرسائل -->
+                <button class="icon-btn" id="messages-btn" title="الرسائل">
+                    <i class="fa-solid fa-envelope"></i>
+                    <span class="badge" style="display: none;">0</span>
+                </button>
+                <!-- زر الإشعارات -->
+                <button class="icon-btn" id="notifications-btn" title="الإشعارات">
+                    <i class="fa-solid fa-bell"></i>
+                    <span class="badge" style="display: none;">0</span>
+                </button>
+                <!-- صورة المستخدم + القائمة -->
+                <div class="user-avatar-box" id="avatar-btn">
+                    <img src="photo/aaa.jpg" alt="صورة المستخدم">
+                    <div class="profile-dropdown" id="profile-dropdown">
+                        <!-- شريط XP ماينكرافت -->
+                        <div class="xp-section">
+                            <div class="xp-label">
+                                <span>تقدّمك</span>
+                                <span class="xp-level-badge">Lv.7</span>
+                            </div>
+                            <div class="mc-xp-bg">
+                                <div class="mc-xp-fill" style="width: 68%"></div>
+                            </div>
+                            <div class="xp-text">680 / 1000 XP</div>
+                        </div>
+                        <hr>
+                        <a href="profile.html"><i class="fa-solid fa-user"></i> الملف الشخصي</a>
+                        <a href="#" id="logout-btn"><i class="fa-solid fa-right-from-bracket"></i> تسجيل خروج</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div id="main-home">
+
+            <section class="intro-section">
+                <video autoplay loop muted playsinline>
+                    <source src="photo/intro_video.mp4" type="video/mp4">
+                    متصفحك لا يدعم تشغيل الفيديو.
+                </video>
+                <div class="intro-buttons-container">
+                    <button id="intro-placement-btn" class="intro-placement-btn">
+                        <i class="fa-solid fa-play"></i> اختبار تحديد المستوى
+                    </button>
+                    <button id="intro-start-learning-btn" class="intro-start-learning-btn">
+                        <i class="fa-regular fa-comments"></i> ابدأ التعلم معنا
+                    </button>
+                </div>
+            </section>
+
+            <section class="levels-section">
+                <h2>المستويات التعليمية</h2>
+                <div class="levels-container">
+                    <div class="level-card" data-level="1"><span class="level-number">1</span></div>
+                    <div class="level-card" data-level="2"><span class="level-number">2</span></div>
+                    <div class="level-card" data-level="3"><span class="level-number">3</span></div>
+                    <div class="level-card" data-level="4"><span class="level-number">4</span></div>
+                    <div class="level-card" data-level="5"><span class="level-number">5</span></div>
+                    <div class="level-card" data-level="6"><span class="level-number">6</span></div>
+                    <div class="level-card" data-level="7"><span class="level-number">7</span></div>
+                    <div class="level-card" data-level="8"><span class="level-number">8</span></div>
+                    <div class="level-card" data-level="9"><span class="level-number">9</span></div>
+                    <div class="level-card" data-level="10"><span class="level-number">10</span></div>
+                    <div class="level-card" data-level="11"><span class="level-number">11</span></div>
+                    <div class="level-card" data-level="12"><span class="level-number">12</span></div>
+                </div>
+            </section>
+
+            <section class="upcoming-section">
+                <div class="announcement-banner">
+                    <h2>ترقبوا دوراتنا الجديدة قريباً!</h2>
+                </div>
+            </section>
+
+           <section id="student-exams-section" class="upcoming-section" style="display: none;">
+    <div class="graduation-container" id="exams-container">
+        <!-- يُملأ ديناميكياً -->
+    </div>
+</section>
+
+            <section class="features-section">
+    <h2>الأنشطة التفاعلية المتاحة</h2>
+    <div class="features-container" id="activities-container">
+        <!-- يُملأ ديناميكياً -->
+    </div>
+</section>
+
+            <section class="blog-section">
+    <h2 id="blog-title-link">المقالات والمدونات</h2>
+    <div class="blog-slider-wrapper">
+        <button class="blog-arrow" id="blog-prev"><i class="fa-solid fa-chevron-right"></i></button>
+        <div class="blog-slider-container">
+            <div class="blog-slider" id="blog-slider">
+                <!-- يُملأ ديناميكياً -->
+            </div>
+        </div>
+        <button class="blog-arrow" id="blog-next"><i class="fa-solid fa-chevron-left"></i></button>
+    </div>
+</section>
+
+            <section class="features-section">
+                <h2>ماذا يميز منصتنا؟</h2>
+                <div class="features-container">
+                    <div class="feature-card">
+                        <i class="fa-solid fa-bolt"></i>
+                        <h3>تعلم تفاعلي سريع</h3>
+                        <p>منهجية متطورة تعتمد على الممارسة المباشرة والأنشطة لترسيخ القواعد والكلمات بسرعة.</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fa-solid fa-shield-halved"></i>
+                        <h3>شهادات تخرج معتمدة</h3>
+                        <p>احصل على شهادة تقييمية شاملة وموثقة فور اجتيازك امتحانات التخرج والواجبات بنجاح.</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fa-solid fa-comments"></i>
+                        <h3>بيئة محادثة حية</h3>
+                        <p>غرف صوتية جماعية وتفاعلية مخصصة لكسر حاجز الخوف والتحدث بطلاقة مع زملائك ومدرسيك.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- آراء الطلاب - مربع كبير مع 3 تعليقات -->
+            <section class="testimonials-section">
+                <h2>آراء طلابنا الناجحين</h2>
+                <div class="testimonials-big-box" id="testimonials-big-box">
+                    <div class="testimonials-wrapper" id="testimonials-wrapper">
+                        <!-- التعليقات تُملأ ديناميكياً -->
+                    </div>
+                    <div class="testimonials-dots" id="testimonials-dots"></div>
+                </div>
+            </section>
+
+            <!-- قسم إضافة رأي جديد (يظهر للطلاب فقط) -->
+            <section id="add-review-section" class="add-review-container" style="display: none;">
+                <div class="review-form-card">
+                    <div class="review-card-glow"></div>
+                    <div class="review-header-premium">
+                        <i class="fa-solid fa-quote-right quote-icon"></i>
+                        <h3>شاركنا قصتك ونجاحك</h3>
+                        <p>رأيك الصادق هو منارة تضيء الطريق للطلاب الجدد في رحلتهم نحو التميز.</p>
+                    </div>
+                    <form id="student-review-form">
+                        <div class="rating-selection">
+                            <span class="rating-label">ما هو تقييمك العام للمنصة؟</span>
+                            <div class="stars-input">
+                                <input type="radio" name="rating" value="5" id="star5" checked><label for="star5">★</label>
+                                <input type="radio" name="rating" value="4" id="star4"><label for="star4">★</label>
+                                <input type="radio" name="rating" value="3" id="star3"><label for="star3">★</label>
+                                <input type="radio" name="rating" value="2" id="star2"><label for="star2">★</label>
+                                <input type="radio" name="rating" value="1" id="star1"><label for="star1">★</label>
+                            </div>
+                        </div>
+                        <div class="form-group-review">
+                            <label for="review-text" class="input-label-premium">تفاصيل تجربتك التعليمية:</label>
+                            <textarea id="review-text" placeholder="ما أكثر شيء أعجبك؟ كيف ساعدتك المنصة في تطوير لغتك؟" required></textarea>
+                        </div>
+                        <div class="submit-wrapper-premium">
+                            <button type="submit" class="submit-review-btn-premium">
+                                <i class="fa-solid fa-paper-plane"></i>
+                                <span>نشر المراجعة على الحائط</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+        </div>
+
+        <div id="page-exams" class="page-section">
+            <h1><i class="fa-solid fa-file-pen"></i> لوحة الامتحانات والوظائف الشاملة</h1>
+            <p>مرحباً بك في لوحة التقييم الأكاديمي. يرجى اختيار الاختبار أو تقديم الوظيفة المطلوبة لمتابعة تقدمك.</p>
+        </div>
+
+        <div id="page-activities" class="page-section">
+            <h1><i class="fa-solid fa-gamepad"></i> النشاطات التفاعلية وغرف المحادثة</h1>
+            <p>أهلاً بك في صفحة الأنشطة. تتضمن غرف المحادثة الجماعية الحية والألعاب التعليمية المخصصة لتقوية مهاراتك.</p>
+        </div>
+
+        <div id="page-blog" class="page-section">
+            <h1><i class="fa-solid fa-newspaper"></i> مدونة المنصة والمقالات الأكاديمية</h1>
+            <p>تصفح أقوى النصائح اللغوية المجانية المقدمة من خبراء التعليم لتطوير مهاراتك بشكل مستمر.</p>
+        </div>
+
+        
+
+    </main>
+
+    <!-- نافذة الرسائل -->
+    <div id="messages-overlay" class="full-page-overlay">
+        <div class="notifications-card">
+            <button class="close-full-btn" id="close-messages">&times;</button>
+            <h2><i class="fa-solid fa-envelope"></i> صندوق الوارد</h2>
+            <div class="notifications-list" id="messages-list">
+                <!-- يتم ملؤه ديناميكياً عند وجود رسائل حقيقية -->
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة الإشعارات -->
+    <div id="notifications-overlay" class="full-page-overlay">
+        <div class="notifications-card">
+            <button class="close-full-btn" id="close-notifications">&times;</button>
+            <h2><i class="fa-solid fa-bell"></i> الإشعارات</h2>
+            <div class="notifications-list" id="notifications-list">
+                <!-- يتم ملؤه ديناميكياً عند صدور امتحانات أو أنشطة من الإدارة -->
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-section right-side">
+            <img src="photo/aaa.jpg" alt="Logo" class="footer-logo">
+            <div class="site-desc">
+                <h3>منصة English Course</h3>
+                <p>موقع تعليمي مخصص لتطوير مهارات اللغة الإنجليزية من خلال امتحانات مدروسة ونشاطات تفاعلية.</p>
+            </div>
+        </div>
+        <div class="footer-section center-side">
+            <h3>تواصل معنا</h3>
+            <p><i class="fa-solid fa-phone"></i> +963 999 999 999</p>
+            <p><i class="fa-solid fa-envelope"></i> info@englishcourse.com</p>
+        </div>
+        <div class="footer-section left-side">
+            <h3>تابعنا على</h3>
+            <div class="social-icons">
+                <a href="#" class="icon facebook"><i class="fa-brands fa-facebook-f"></i></a>
+                <a href="#" class="icon whatsapp"><i class="fa-brands fa-whatsapp"></i></a>
+                <a href="#" class="icon telegram"><i class="fa-brands fa-telegram"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
