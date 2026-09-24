@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الامتحانات والاختبارات - English Course</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="user.css">
+    <style>
+        body { display: flex; flex-direction: column; min-height: 100vh; }
+        .main-content { flex: 1; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
+        
+        .as ul li a { color: var(--black-soft) !important; transition: 0.3s; text-decoration: none; position: relative; z-index: 1; }
+        .as ul li a:hover, .as ul li a.active { color: #ffffff !important; font-weight: bold; }
+        .mobile-menu-btn { color: var(--black-soft); border: none; background: none; font-size: 24px; cursor: pointer; display: none; }
+
+        .page-header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .page-title { font-size: 26px; font-weight: 900; font-family: 'Tajawal', sans-serif; }
+        .page-title span { color: var(--purple); }
+        
+        .items-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 25px; }
+        .item-card { background: #fff; border: 1.5px solid rgba(139,47,201,0.15); border-radius: var(--radius-xl); padding: 24px; box-shadow: var(--shadow-sm); transition: 0.3s; display: flex; flex-direction: column; gap: 12px; }
+        .item-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); border-color: var(--purple); }
+        .item-card h3 { color: var(--black-soft); font-family: 'Tajawal', sans-serif; font-size: 18px; }
+        .item-card p { color: #555; font-size: 14px; line-height: 1.6; flex: 1; }
+        
+        .card-meta { display: flex; flex-direction: column; gap: 5px; font-size: 12px; color: #888; border-top: 1px solid #eee; padding-top: 12px; margin-top: 10px; }
+        .card-meta span i { color: var(--purple); margin-left: 6px; width: 14px; text-align: center; }
+
+        .btn-action { display: block; text-align: center; background: linear-gradient(135deg, var(--purple), var(--blue)); color: white; padding: 12px; border-radius: 12px; text-decoration: none; font-weight: bold; font-size: 14px; transition: 0.3s; margin-top: 10px; box-shadow: 0 4px 15px rgba(139,47,201,0.2); }
+        .btn-action:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(139,47,201,0.35); }
+
+        @media (max-width: 768px) {
+            .mobile-menu-btn { display: block; }
+            .as { display: none; }
+            .as.active { display: block; position: absolute; top: 70px; left: 10px; right: 10px; background: white; border-radius: 10px; padding: 10px; box-shadow: var(--shadow-md); z-index: 100; }
+            .as ul { flex-direction: column; gap: 10px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="main-header">
+        <img src="photo/aaa.jpg" alt="Logo" class="img">
+        <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="القائمة"><i class="fa-solid fa-bars"></i></button>
+        <nav class="as" id="nav-menu">
+            <ul id="main-nav-links">
+    <li><a href="index.html">الرئيسية</a></li>
+    <li><a href="exams.html" class="active">الامتحانات</a></li>
+    <li><a href="homeworks.html">الوظائف</a></li>
+    <li><a href="index.html#activities">النشاطات</a></li>
+    <li><a href="blog.html">المقالات</a></li>
+</ul>
+        </nav>
+        
+        <div class="header-auth-section">
+            <div class="auth-buttons" id="guest-auth">
+                <a href="login.html?tab=login" class="login">تسجيل الدخول</a>
+            </div>
+
+            <div class="user-logged-in" id="logged-in-auth" style="display: none;">
+                <button class="icon-btn" id="messages-btn" title="الرسائل"><i class="fa-solid fa-envelope"></i><span class="badge" style="display: none;">0</span></button>
+                <button class="icon-btn" id="notifications-btn" title="الإشعارات"><i class="fa-solid fa-bell"></i><span class="badge" style="display: none;">0</span></button>
+                
+                <div class="user-avatar-box" id="avatar-btn">
+                    <img src="photo/aaa.jpg" alt="صورة المستخدم">
+                    <div class="profile-dropdown" id="profile-dropdown">
+                        <div class="xp-section">
+                            <div class="xp-label">
+                                <span>تقدّمك الحالي</span>
+                                <span class="xp-level-badge" id="dropdown-xp-level">Lv.1</span>
+                            </div>
+                            <div class="mc-xp-bg">
+                                <div class="mc-xp-fill" id="dropdown-xp-fill" style="width: 0%"></div>
+                            </div>
+                            <div class="xp-text" id="dropdown-xp-text">0 / 1000 XP</div>
+                        </div>
+                        <hr>
+                        <a href="profile.html"><i class="fa-solid fa-user"></i> الملف الشخصي</a>
+                        <a href="#" id="logout-btn"><i class="fa-solid fa-right-from-bracket"></i> تسجيل خروج</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-content">
+        <div class="container">
+            <div class="page-header-top">
+                <h1 class="page-title"><i class="fa-solid fa-file-signature" style="color:var(--gold)"></i> لوحة <span>الامتحانات والاختبارات</span> الحقيقية</h1>
+            </div>
+            <div class="items-grid" id="exams-container">
+                <p style="text-align: center; width: 100%; color: #888;">جاري تحميل الامتحانات والبيانات الحية...</p>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-section right-side">
+            <img src="photo/aaa.jpg" alt="Logo" class="footer-logo">
+            <div class="site-desc">
+                <h3>منصة English Course</h3>
+                <p>موقع تعليمي مخصص لتطوير مهارات اللغة الإنجليزية من خلال امتحانات مدروسة ونشاطات تفاعلية.</p>
+            </div>
+        </div>
+        <div class="footer-section center-side">
+            <h3>تواصل معنا</h3>
+            <p><i class="fa-solid fa-phone"></i> +963 999 999 999</p>
+            <p><i class="fa-solid fa-envelope"></i> info@englishcourse.com</p>
+        </div>
+        <div class="footer-section left-side">
+            <h3>تابعنا على</h3>
+            <div class="social-icons">
+                <a href="#" class="icon facebook"><i class="fa-brands fa-facebook-f"></i></a>
+                <a href="#" class="icon whatsapp"><i class="fa-brands fa-whatsapp"></i></a>
+                <a href="#" class="icon telegram"><i class="fa-brands fa-telegram"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:5000';
+
+        document.addEventListener('DOMContentLoaded', async function() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = 'login.html?tab=login';
+                return;
+            }
+
+            // جلب الـ XP والمستوى الحقيقي للهيدر
+            try {
+                const profileRes = await fetch(`${API_BASE_URL}/api/student/profile`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const studentData = await profileRes.json();
+                
+                if (profileRes.ok) {
+                    document.getElementById('guest-auth').style.display = 'none';
+                    document.getElementById('logged-in-auth').style.display = 'flex';
+                    
+                    const currentLevel = studentData.level || 1;
+                    const currentXP = studentData.xp || 0;
+                    const percentage = Math.min((currentXP / 1000) * 100, 100);
+                    
+                    document.getElementById('dropdown-xp-level').textContent = `Lv.${currentLevel}`;
+                    document.getElementById('dropdown-xp-fill').style.width = `${percentage}%`;
+                    document.getElementById('dropdown-xp-text').textContent = `${currentXP} / 1000 XP`;
+                }
+            } catch (err) { console.error(err); }
+
+            // جلب مصفوفة الامتحانات الحقيقية
+            const container = document.getElementById('exams-container');
+            try {
+                const res = await fetch(`${API_BASE_URL}/api/exams`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const exams = await res.json();
+
+                if (res.ok && exams.length > 0) {
+                    container.innerHTML = exams.map(exam => `
+                        <div class="item-card">
+                            <h3>${exam.title}</h3>
+                            <p>${exam.description || 'لا يوجد وصف متاح لهذا الاختبار.'}</p>
+                            <div class="card-meta">
+                                <span><i class="fa-solid fa-clock"></i> الموعد النهائي: ${exam.deadline ? new Date(exam.deadline).toLocaleDateString('ar-SA') : 'غير محدد'}</span>
+                                <span><i class="fa-solid fa-calendar-plus"></i> تاريخ النشر: ${new Date(exam.createdAt).toLocaleDateString('ar-SA')}</span>
+                            </div>
+                            ${exam.file_url ? `<a href="${exam.file_url}" class="btn-action" target="_blank"><i class="fa-solid fa-file-pdf"></i> تحميل ملف الامتحان</a>` : '<span style="color:#ff4d4d; font-size:12px; text-align:center; font-weight:bold; margin-top:10px;">ملف الاختبار قيد الرفع من الإدارة</span>'}
+                        </div>
+                    `).join('');
+                } else {
+                    container.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:#888;font-weight:bold;">لا توجد اختبارات منشورة حالياً.</div>';
+                }
+            } catch (e) {
+                container.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:red;font-weight:bold;">حدث خطأ أثناء الاتصال بالسيرفر.</div>';
+            }
+
+            // التفاعلات الأساسية للقوائم
+            document.getElementById('avatar-btn')?.addEventListener('click', e => { e.stopPropagation(); document.getElementById('profile-dropdown').classList.toggle('active'); });
+            document.addEventListener('click', () => document.getElementById('profile-dropdown')?.classList.remove('active'));
+            document.getElementById('logout-btn')?.addEventListener('click', e => { e.preventDefault(); localStorage.removeItem('token'); localStorage.removeItem('user'); window.location.href = 'index.html'; });
+            document.getElementById('mobile-menu-btn')?.addEventListener('click', () => document.getElementById('nav-menu').classList.toggle('active'));
+        });
+        document.getElementById('messages-btn')?.addEventListener('click', () => window.location.href = 'chat.html');
+    </script>
+</body>
+</html>

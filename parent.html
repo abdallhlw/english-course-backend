@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بوابة ولي الأمر - English Course</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="user.css">
+    <style>
+        .parent-container { width: 90%; max-width: 1000px; margin: 40px auto; }
+        .child-card { background: #fff; border: 3px solid #000; border-radius: 20px; padding: 25px; margin-bottom: 25px; box-shadow: 6px 6px 0 #000; display: flex; align-items: center; gap: 30px; }
+        .child-info { flex: 1; }
+        .child-info h2 { margin-bottom: 10px; color: #8A2BE2; }
+        .child-avatar { width: 100px; height: 100px; border: 3px solid #000; border-radius: 50%; object-fit: cover; }
+        .parent-welcome { text-align: center; margin-bottom: 40px; }
+        .no-children { text-align: center; padding: 50px; background: #fff; border: 3px dashed #000; border-radius: 20px; }
+    </style>
+</head>
+<body>
+    <header>
+        <img src="photo/aaa.jpg" alt="Logo" class="img">
+        <nav class="as">
+            <ul id="main-nav-links">
+                <li><a href="index.html" id="nav-home">الرئيسية</a></li>
+                <!-- الروابط أدناه ستظهر فقط بعد تسجيل الدخول عبر JavaScript -->
+                <li class="protected-link" style="display: none;"><a href="index.html#exams" id="nav-exams">الامتحانات والوظائف</a></li>
+                <li class="protected-link" style="display: none;"><a href="index.html#activities" id="nav-activities">النشاطات</a></li>
+                <li class="protected-link" style="display: none;"><a href="blog.html" id="nav-blog">المقالات</a></li>
+            </ul>
+        </nav>
+        <div class="header-auth-section">
+            <div class="auth-buttons" id="guest-auth" style="display: none;">
+                <button class="login" id="open-login-btn">تسجيل الدخول</button>
+                <button class="sign" id="open-sign-btn">إنشاء حساب</button>
+            </div>
+            <div class="user-logged-in" id="logged-in-auth">
+                <button class="icon-btn" id="messages-btn" title="الرسائل">
+                    <i class="fa-solid fa-envelope"></i>
+                    <span class="badge" style="display: none;">0</span>
+                </button>
+                <button class="icon-btn" id="notifications-btn" title="الإشعارات">
+                    <i class="fa-solid fa-bell"></i>
+                    <span class="badge" style="display: none;">0</span>
+                </button>
+                <div class="user-avatar-box" id="avatar-btn">
+                    <img src="photo/aaa.jpg" alt="صورة المستخدم">
+                    <div class="profile-dropdown" id="profile-dropdown">
+                        <div class="xp-section">
+                            <div class="xp-label">
+                                <span>تقدّمك</span>
+                                <span class="xp-level-badge">Lv.7</span>
+                            </div>
+                            <div class="mc-xp-bg">
+                                <div class="mc-xp-fill" style="width: 68%"></div>
+                            </div>
+                            <div class="xp-text">680 / 1000 XP</div>
+                        </div>
+                        <hr>
+                        <a href="index.html#profile" id="nav-profile"><i class="fa-solid fa-user"></i> الملف الشخصي</a>
+                        <a href="#" id="logout-btn"><i class="fa-solid fa-right-from-bracket"></i> تسجيل خروج</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="parent-container">
+        <div class="parent-welcome">
+            <h1><i class="fa-solid fa-hands-holding-child" style="color: #FF69B4;"></i> متابعة الأبناء</h1>
+            <p>هنا يمكنك متابعة مستوى أبنائك التعليمي ونقاط تقدمهم بشكل مباشر.</p>
+        </div>
+
+        <div id="children-list">
+            <!-- يتم ملؤه ديناميكياً -->
+            <div class="no-children">جاري تحميل بيانات الأبناء...</div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-section right-side">
+            <img src="photo/aaa.jpg" alt="Logo" class="footer-logo">
+            <div class="site-desc">
+                <h3>منصة English Course</h3>
+                <p>موقع تعليمي مخصص لتطوير مهارات اللغة الإنجليزية من خلال امتحانات مدروسة ونشاطات تفاعلية.</p>
+            </div>
+        </div>
+        <div class="footer-section center-side">
+            <h3>تواصل معنا</h3>
+            <p><i class="fa-solid fa-phone"></i> +963 999 999 999</p>
+            <p><i class="fa-solid fa-envelope"></i> info@englishcourse.com</p>
+        </div>
+        <div class="footer-section left-side">
+            <h3>تابعنا على</h3>
+            <div class="social-icons">
+                <a href="#" class="icon facebook"><i class="fa-brands fa-facebook-f"></i></a>
+                <a href="#" class="icon whatsapp"><i class="fa-brands fa-whatsapp"></i></a>
+                <a href="#" class="icon telegram"><i class="fa-brands fa-telegram"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const token = localStorage.getItem('token');
+            if (!token) { window.location.href = 'index.html'; return; }
+
+            try {
+                const response = await fetch('http://localhost:5001/api/parent/children', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const children = await response.json();
+                const list = document.getElementById('children-list');
+                
+                if (children.length === 0) {
+                    list.innerHTML = '<div class="no-children"><h3>لا يوجد أبناء مرتبطين بهذا الحساب حالياً.</h3><p>يرجى تزويد الإدارة بالرقم الدراسي الخاص بطفلك لربطه بحسابك.</p></div>';
+                    return;
+                }
+
+                list.innerHTML = children.map(child => `
+                    <div class="child-card">
+                        <img src="photo/aaa.jpg" class="child-avatar">
+                        <div class="child-info">
+                            <h2>${child.name}</h2>
+                            <p><strong>الرقم الدراسي:</strong> ${child.student_id}</p>
+                            <div class="xp-section">
+                                <div class="xp-label">
+                                    <span>التقدم الحالي</span>
+                                    <span class="xp-level-badge">المستوى ${child.level || 1}</span>
+                                </div>
+                                <div class="mc-xp-bg">
+                                    <div class="mc-xp-fill" style="width: ${(child.xp % 1000) / 10}%"></div>
+                                </div>
+                                <div class="xp-text">${child.xp || 0} XP</div>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (err) {
+                console.error(err);
+            }
+
+            // منطق القائمة المنسدلة
+            const avatarBtn = document.getElementById('avatar-btn');
+            const profileDropdown = document.getElementById('profile-dropdown');
+            if(avatarBtn) {
+                avatarBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    profileDropdown.classList.toggle('active');
+                });
+                document.addEventListener('click', () => profileDropdown.classList.remove('active'));
+            }
+
+            document.getElementById('logout-btn').addEventListener('click', () => {
+                localStorage.clear();
+                window.location.href = 'index.html';
+            });
+        });
+    </script>
+</body>
+</html>

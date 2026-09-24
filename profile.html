@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الملف الشخصي - English Course</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@700;900&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="user.css"> <style>
+        body { display: flex; flex-direction: column; min-height: 100vh; }
+        .main-content { flex: 1; padding: 40px 20px; }
+        .container { max-width: 1000px; margin: 0 auto; }
+
+        .as ul li a { color: var(--black-soft) !important; transition: 0.3s; text-decoration: none; position: relative; z-index: 1; }
+        .as ul li a:hover, .as ul li a.active { color: #ffffff !important; font-weight: bold; }
+        .mobile-menu-btn { color: var(--black-soft); border: none; background: none; font-size: 24px; cursor: pointer; display: none; }
+
+        /* تصميم بطاقة الملف الشخصي الفخمة المتناسقة */
+        .profile-header-card {
+            background: #fff;
+            border-radius: var(--radius-xl, 24px);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            border: 1.5px solid rgba(139,47,201,0.15);
+            margin-bottom: 30px;
+        }
+        .profile-cover {
+            height: 140px;
+            background: linear-gradient(135deg, var(--purple), var(--blue));
+        }
+        .profile-info-section {
+            padding: 0 30px 30px 30px;
+            display: flex;
+            align-items: flex-end;
+            margin-top: -50px;
+            gap: 25px;
+            flex-wrap: wrap;
+        }
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 5px solid #fff;
+            box-shadow: var(--shadow-md);
+            object-fit: cover;
+            background: #fff;
+        }
+        .profile-text { flex: 1; margin-top: 60px; }
+        .profile-text h1 { font-family: 'Tajawal', sans-serif; color: var(--black-soft); font-size: 28px; margin-bottom: 6px; }
+        .profile-text p { color: #666; font-size: 14px; display: flex; align-items: center; gap: 8px; }
+        .role-badge { background: var(--purple-pale); color: var(--purple); padding: 4px 14px; border-radius: 20px; font-size: 12px; font-weight: bold; }
+
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; padding: 0 30px 30px 30px; }
+        .stat-box { background: var(--white-dim); border: 1px solid rgba(139,47,201,0.08); border-radius: 16px; padding: 20px; text-align: center; transition: 0.3s; }
+        .stat-box:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); border-color: var(--purple); }
+        .stat-box i { font-size: 28px; margin-bottom: 10px; }
+        .stat-box h3 { font-size: 22px; color: var(--black-soft); font-family: 'Tajawal', sans-serif; }
+        .stat-box p { color: #888; font-size: 13px; margin-top: 4px; }
+
+        .xp-container-large { grid-column: 1 / -1; background: #fff; border: 2px dashed var(--blue-light); padding: 25px; border-radius: 16px; }
+        .xp-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; font-weight: bold; font-family: 'Tajawal', sans-serif; }
+        
+        .xp-bar-bg { width: 100%; height: 22px; background: #eee; border-radius: 11px; overflow: hidden; position: relative; box-shadow: inset 0 2px 4px rgba(0,0,0,0.1); }
+        .xp-bar-fill { height: 100%; background: linear-gradient(90deg, var(--gold), var(--gold-deep)); width: 0%; transition: width 1s ease; position: relative; }
+        .xp-bar-fill::after { content: ''; position: absolute; top:0; left:0; bottom:0; right:0; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent); animation: shimmer 2.5s infinite; }
+        @keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+
+        @media (max-width: 768px) {
+            .mobile-menu-btn { display: block; }
+            .as { display: none; }
+            .as.active { display: block; position: absolute; top: 70px; left: 10px; right: 10px; background: white; border-radius: 10px; padding: 10px; box-shadow: var(--shadow-md); z-index: 100; }
+            .as ul { flex-direction: column; gap: 10px; }
+            .profile-info-section { flex-direction: column; align-items: center; text-align: center; }
+            .profile-text { margin-top: 10px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="main-header">
+        <img src="photo/aaa.jpg" alt="Logo" class="img">
+        <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="القائمة"><i class="fa-solid fa-bars"></i></button>
+        <nav class="as" id="nav-menu">
+            <ul id="main-nav-links">
+                <li><a href="index.html">الرئيسية</a></li>
+                <li><a href="exams.html">الامتحانات</a></li>
+                <li><a href="homeworks.html">الوظائف</a></li>
+                <li><a href="blog.html">المقالات</a></li>
+            </ul>
+        </nav>
+        
+        <div class="header-auth-section">
+            <div class="user-logged-in" id="logged-in-auth">
+                <button class="icon-btn" id="messages-btn" title="الرسائل"><i class="fa-solid fa-envelope"></i><span class="badge" style="display: none;">0</span></button>
+                <button class="icon-btn" id="notifications-btn" title="الإشعارات"><i class="fa-solid fa-bell"></i><span class="badge" style="display: none;">0</span></button>
+                
+                <div class="user-avatar-box" id="avatar-btn">
+                    <img src="photo/aaa.jpg" alt="صورة المستخدم">
+                    <div class="profile-dropdown" id="profile-dropdown">
+                        <div class="xp-section">
+                            <div class="xp-label">
+                                <span>تقدّمك الحالي</span>
+                                <span class="xp-level-badge" id="dropdown-xp-level">Lv.1</span>
+                            </div>
+                            <div class="mc-xp-bg">
+                                <div class="mc-xp-fill" id="dropdown-xp-fill" style="width: 0%"></div>
+                            </div>
+                            <div class="xp-text" id="dropdown-xp-text">0 / 1000 XP</div>
+                        </div>
+                        <hr>
+                        <a href="profile.html" class="active"><i class="fa-solid fa-user"></i> الملف الشخصي</a>
+                        <a href="#" id="logout-btn"><i class="fa-solid fa-right-from-bracket"></i> تسجيل خروج</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-content">
+        <div class="container">
+            
+            <div class="profile-header-card">
+                <div class="profile-cover"></div>
+                
+                <div class="profile-info-section">
+                   <div style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
+    <img src="photo/aaa.jpg" alt="Avatar" class="profile-avatar" id="profile-avatar-img">
+    
+    <label for="student-avatar-file-input" style="cursor: pointer; color: var(--purple); font-size: 13px; font-weight: bold; background: var(--purple-pale, #F3E8FF); padding: 5px 12px; border-radius: 15px; transition: 0.3s;">
+        <i class="fa-solid fa-camera"></i> تغيير الصورة
+    </label>
+    <input type="file" id="student-avatar-file-input" accept="image/*" style="display: none;">
+    
+    <button id="student-upload-avatar-btn" style="display: none; background: linear-gradient(135deg, var(--purple), var(--blue)); color: white; border: none; padding: 6px 15px; border-radius: 8px; cursor: pointer; font-size: 12px; font-weight: bold;">
+        حفظ الصورة
+    </button>
+</div>
+                    <div class="profile-text">
+                        <h1 id="profile-name">جاري تحميل البيانات...</h1>
+                        <p>
+                            <span class="role-badge" id="profile-role">طالب</span>
+                            <i class="fa-solid fa-envelope" style="margin-right: 15px; color: #888;"></i> <span id="profile-email">...</span>
+                        </p>
+                    </div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <i class="fa-solid fa-id-card" style="color: var(--blue);"></i>
+                        <h3 id="profile-student-id">---</h3>
+                        <p>الرقم الدراسي الفريد</p>
+                    </div>
+
+                    <div class="stat-box">
+                        <i class="fa-solid fa-crown" style="color: var(--purple);"></i>
+                        <h3 id="profile-level-badge">Lv. 1</h3>
+                        <p>المستوى الدراسي</p>
+                    </div>
+
+                    <div class="xp-container-large">
+                        <div class="xp-header">
+                            <span><i class="fa-solid fa-bolt" style="color: var(--gold);"></i> نقاط الخبرة الإجمالية (XP)</span>
+                            <span style="color:#888;" id="xp-text-large">0 / 1000 XP</span>
+                        </div>
+                        <div class="xp-bar-bg">
+                            <div class="xp-bar-fill" id="xp-bar-large"></div>
+                        </div>
+                        <p style="text-align: center; margin-top: 10px; font-size: 13px; color: #888;">استمر بمذاكرة الدروس وحل الاختبارات لرفع مستواك الحقيقي في المنصة!</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-section right-side">
+            <img src="photo/aaa.jpg" alt="Logo" class="footer-logo">
+            <div class="site-desc">
+                <h3>منصة English Course</h3>
+                <p>موقع تعليمي مخصص لتطوير مهارات اللغة الإنجليزية من خلال امتحانات مدروسة ونشاطات تفاعلية.</p>
+            </div>
+        </div>
+        <div class="footer-section center-side">
+            <h3>تواصل معنا</h3>
+            <p><i class="fa-solid fa-phone"></i> +963 999 999 999</p>
+            <p><i class="fa-solid fa-envelope"></i> info@englishcourse.com</p>
+        </div>
+        <div class="footer-section left-side">
+            <h3>تابعنا على</h3>
+            <div class="social-icons">
+                <a href="#" class="icon facebook"><i class="fa-brands fa-facebook-f"></i></a>
+                <a href="#" class="icon whatsapp"><i class="fa-brands fa-whatsapp"></i></a>
+                <a href="#" class="icon telegram"><i class="fa-brands fa-telegram"></i></a>
+            </div>
+        </div>
+    </footer>
+
+   <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const API_BASE_URL = 'http://localhost:5000';
+
+        // 1. إظهار زر الحفظ عند اختيار صورة من الجهاز
+        document.getElementById('student-avatar-file-input')?.addEventListener('change', function() {
+            if(this.files.length > 0) {
+                const uploadBtn = document.getElementById('student-upload-avatar-btn');
+                if(uploadBtn) uploadBtn.style.display = 'inline-block';
+            }
+        });
+
+        // 2. كود رفع الصورة الفعلي عند الضغط على حفظ
+        document.getElementById('student-upload-avatar-btn')?.addEventListener('click', async function() {
+            const fileInput = document.getElementById('student-avatar-file-input');
+            if(!fileInput || fileInput.files.length === 0) {
+                alert('الرجاء اختيار صورة أولاً');
+                return;
+            }
+            
+            const originalText = this.innerHTML;
+            this.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري الرفع...';
+            this.disabled = true;
+
+            const formData = new FormData();
+            formData.append('avatar', fileInput.files[0]);
+            const token = localStorage.getItem('token');
+            
+            try {
+                const res = await fetch(`${API_BASE_URL}/api/student/avatar`, {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}` },
+                    body: formData
+                });
+                const data = await res.json();
+                
+                if(res.ok) {
+                    alert('✅ تم تحديث صورتك الشخصية بنجاح!');
+                    
+                    // إضافة طابع زمني لإجبار المتصفح على عرض الصورة الجديدة فوراً
+                    const timestamp = new Date().getTime();
+                    const newImageUrl = `${API_BASE_URL}${data.avatar_url}?t=${timestamp}`;
+                    
+                    // تحديث الصورة في صفحة الملف الشخصي (الصورة الكبيرة وصورة الهيدر)
+                    if(document.getElementById('profile-avatar-img')) document.getElementById('profile-avatar-img').src = newImageUrl;
+                    if(document.querySelector('#avatar-btn img')) document.querySelector('#avatar-btn img').src = newImageUrl;
+                    
+                    // 🔥 السر هنا: حفظ الرابط الجديد لكي يظهر في باقي الصفحات 🔥
+                    const user = JSON.parse(localStorage.getItem('user'));
+                    user.avatar_url = data.avatar_url;
+                    localStorage.setItem('user', JSON.stringify(user));
+                    
+                    // إخفاء زر الحفظ بعد الانتهاء
+                    this.style.display = 'none';
+                } else {
+                    alert('❌ فشل تحديث الصورة: ' + (data.error || 'خطأ غير معروف'));
+                }
+            } catch (err) {
+                alert('❌ تعذر الاتصال بالسيرفر لرفع الصورة');
+            } finally {
+                this.innerHTML = originalText;
+                this.disabled = false;
+            }
+        });
+    });
+</script>
+</body>
+</html>
